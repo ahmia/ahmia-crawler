@@ -41,7 +41,7 @@ $ sudo service polipo restart
 
 
 ```sh
-$ curl -XPUT -i "localhost:9200/crawlings/" -d "@./mappings.json"
+$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
 ```
 
 
