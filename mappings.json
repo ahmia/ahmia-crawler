@@ -98,7 +98,7 @@
 					}
 				}
 			},
-			"onion": {
+			"tor": {
 				"properties": {
 					"domain": {
 						"type": "string",
