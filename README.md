@@ -39,6 +39,12 @@ $ sudo cp polipo_conf /etc/polipo/config
 $ sudo service polipo restart
 ```
 
+
+```sh
+$ curl -XPUT -i "localhost:9200/crawlings/" -d "@./mappings.json"
+```
+
+
 Run the crawler software
 ------------------------
 
@@ -51,7 +57,7 @@ $ scrapy crawl i2pSpider -s DEPTH_LIMIT=1 -s ROBOTSTXT_OBEY=0 -s ELASTICSEARCH_T
 or
 $ scrapy crawl OnionSpider -o items.json -t json
 or
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=cp
+$ scrapy crawl OnionSpider -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=targetitemtype
 ```
 
 Run crawler forever:
