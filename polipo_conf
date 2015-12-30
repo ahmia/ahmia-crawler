@@ -1,0 +1,9 @@
+# This file only needs to list configuration variables that deviate
+# from the default values.  See /usr/share/doc/polipo/examples/config.sample
+# and "polipo -v" for variables you can tweak and further information.
+
+logFile=/var/log/polipo/polipo.log
+
+socksParentProxy = localhost:9050
+diskCacheRoot=""
+disableLocalInterface=true
