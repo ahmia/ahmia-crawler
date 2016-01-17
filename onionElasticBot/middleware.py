@@ -47,6 +47,22 @@ class FilterBannedDomains(object):
             log.msg(msg, level=log.INFO)
             raise IgnoreRequest()
 
+class FilterFakeDomains(object):
+    """
+    Middleware to filter requests to fake domains.
+    """
+    def process_request(self, request, spider):
+        parsed_uri = urlparse(request.url)
+        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+        domain = domain.replace("http://", "").replace("https://", "").replace(".onion/", "")
+        banned_domains = settings.get('FAKE_DOMAINS')
+        if domain in banned_domains:
+            # Do not execute this request
+            request.meta['proxy'] = ""
+            msg = "Ignoring request {}, This domain is fake.".format(request.url)
+            log.msg(msg, level=log.INFO)
+            raise IgnoreRequest()
+
 class SubDomainLimit(object):
     """
     Ignore weird sub domain loops (for instance, rss.rss...rss.rss.something.onion)

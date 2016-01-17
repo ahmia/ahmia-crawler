@@ -51,8 +51,9 @@ ROBOTSTXT_OBEY=True
 DOWNLOADER_MIDDLEWARES = {
     'onionElasticBot.middleware.ProxyMiddleware': 100,
     'onionElasticBot.middleware.FilterBannedDomains': 200,
-    'onionElasticBot.middleware.FilterResponses': 300,
-    'onionElasticBot.middleware.SubDomainLimit': 400,
+    'onionElasticBot.middleware.FilterFakeDomains': 300,
+    'onionElasticBot.middleware.FilterResponses': 400,
+    'onionElasticBot.middleware.SubDomainLimit': 500,
 }
 
 # Pipelines
@@ -66,6 +67,12 @@ response = requests.get('https://ahmia.fi/banned/')
 for md5 in response.text.split("\n"):
     if len(md5) is 32:
         BANNED_DOMAINS.append(md5)
+
+FAKE_DOMAINS = []
+response = requests.get('https://ahmia.fi/static/fakelist.txt')
+for onion in response.text.split("\n"):
+    if len(onion) is 16:
+        FAKE_DOMAINS.append(onion)
 
 # HTTP proxy settings
 # port X8123 is for polipo (Tor)
