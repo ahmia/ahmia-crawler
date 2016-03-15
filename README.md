@@ -39,6 +39,7 @@ $ sudo cp polipo_conf /etc/polipo/config
 $ sudo service polipo restart
 ```
 
+Creating Index Settings:
 
 ```sh
 $ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
