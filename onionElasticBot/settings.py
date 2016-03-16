@@ -78,6 +78,6 @@ for onion in response.text.split("\n"):
 # port X8123 is for polipo (Tor)
 # port 8118 is for privoxy (Tor)
 # port 4444 and 4445 is for i2p HTTP/HTTPS proxy
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:18123/", "http://localhost:28123/", "http://localhost:38123/"]
+HTTP_PROXY_TOR_PROXIES = ["http://localhost:8123/", "http://localhost:8123/", "http://localhost:8123/"]
 HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
 HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost
