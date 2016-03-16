@@ -12,6 +12,40 @@ Short guide to the crawler installation
 -	Install Polipo HTTP proxy software
 -	Install i2p software
 
+Elasticsearch
+-------------
+
+/etc/security/limits.conf:
+
+elasticsearch - nofile 65535
+
+elasticsearch - memlock unlimited
+
+/etc/default/elasticsearch (on CentOS/RH: /etc/sysconfig/elasticsearch ):
+
+ES_HEAP_SIZE=2g # Half of your memory, other half is for Lucene
+
+MAX_OPEN_FILES=65535
+
+MAX_LOCKED_MEMORY=unlimited
+
+/etc/elasticsearch/elasticsearch.yml:
+
+bootstrap.mlockall: true
+
+```sh
+service elasticsearch stop
+swapoff -a
+service elasticsearch start
+```
+
+```sh
+$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
+```
+
+Crawling environment
+--------------------
+
 ```sh
 $ sudo apt-get install git
 $ sudo apt-get install python-virtualenv
@@ -31,19 +65,14 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-Setup Polipo:
+Setup Polipo
+------------
 
 ```sh
 $ sudo apt-get install polipo
 $ sudo cp polipo_conf /etc/polipo/config
 $ sudo service polipo restart
 ```
-
-
-```sh
-$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
-```
-
 
 Run the crawler software
 ------------------------
