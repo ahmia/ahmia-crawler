@@ -17,15 +17,15 @@ Elasticsearch
 
 /etc/security/limits.conf:
 
-elasticsearch - nofile 65535
+elasticsearch - nofile unlimited
 
 elasticsearch - memlock unlimited
 
-/etc/default/elasticsearch (on CentOS/RH: /etc/sysconfig/elasticsearch ):
+/etc/default/elasticsearch (on CentOS/RH: /etc/sysconfig/elasticsearch):
 
 ES_HEAP_SIZE=2g # Half of your memory, other half is for Lucene
 
-MAX_OPEN_FILES=65535
+MAX_OPEN_FILES=1065535
 
 MAX_LOCKED_MEMORY=unlimited
 
