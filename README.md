@@ -65,14 +65,10 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-Setup Polipo
+Setup httpTorBalancer
 ------------
 
-```sh
-$ sudo apt-get install polipo
-$ sudo cp polipo_conf /etc/polipo/config
-$ sudo service polipo restart
-```
+- See /search/httpTorBalancer
 
 Run the crawler software
 ------------------------
