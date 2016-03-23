@@ -8,9 +8,7 @@ Short guide to the crawler installation
 
 -	Install Elasticsearch and Oracle Java
 -	Install Python 2.7
--	Install Tor software (use zero-circuit patch)
--	Install Polipo HTTP proxy software
--	Install i2p software
+-	Install [TorBalancer](https://github.com/ahmia/TorBalancer)
 
 Elasticsearch
 -------------
@@ -65,10 +63,11 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-Setup httpTorBalancer
-------------
+Setup TorBalancer
+-----------------
 
-- See /search/httpTorBalancer
+- [TorBalancer](https://github.com/ahmia/TorBalancer)
+
 
 Run the crawler software
 ------------------------
