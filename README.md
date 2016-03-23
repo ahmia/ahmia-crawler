@@ -73,7 +73,9 @@ Run the crawler software
 ------------------------
 
 ```sh
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=100
+$ scrapy crawl OnionSpider -s DEPTH_LIMIT=2 -s ROBOTSTXT_OBEY=0
+or
+$ scrapy crawl OnionSpider -s DEPTH_LIMIT=5 -s LOG_LEVEL=INFO
 or
 $ scrapy crawl i2pSpider -s DEPTH_LIMIT=100 -s LOG_LEVEL=DEBUG -s ELASTICSEARCH_TYPE=i2p
 or
