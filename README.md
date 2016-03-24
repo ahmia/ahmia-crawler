@@ -8,9 +8,42 @@ Short guide to the crawler installation
 
 -	Install Elasticsearch and Oracle Java
 -	Install Python 2.7
--	Install Tor software (use zero-circuit patch)
--	Install Polipo HTTP proxy software
--	Install i2p software
+-	Install [TorBalancer](https://github.com/ahmia/TorBalancer)
+
+Elasticsearch
+-------------
+
+/etc/security/limits.conf:
+
+elasticsearch - nofile unlimited
+
+elasticsearch - memlock unlimited
+
+/etc/default/elasticsearch (on CentOS/RH: /etc/sysconfig/elasticsearch):
+
+ES_HEAP_SIZE=2g # Half of your memory, other half is for Lucene
+
+MAX_OPEN_FILES=1065535
+
+MAX_LOCKED_MEMORY=unlimited
+
+/etc/elasticsearch/elasticsearch.yml:
+
+bootstrap.mlockall: true
+
+```sh
+service elasticsearch stop
+swapoff -a
+service elasticsearch start
+```
+Creating Index Settings:
+
+```sh
+$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
+```
+
+Crawling environment
+--------------------
 
 ```sh
 $ sudo apt-get install git
@@ -31,26 +64,19 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-Setup Polipo:
+Setup TorBalancer
+-----------------
 
-```sh
-$ sudo apt-get install polipo
-$ sudo cp polipo_conf /etc/polipo/config
-$ sudo service polipo restart
-```
-
-Creating Index Settings:
-
-```sh
-$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
-```
+- [TorBalancer](https://github.com/ahmia/TorBalancer)
 
 
 Run the crawler software
 ------------------------
 
 ```sh
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=100
+$ scrapy crawl OnionSpider -s DEPTH_LIMIT=2 -s ROBOTSTXT_OBEY=0
+or
+$ scrapy crawl OnionSpider -s DEPTH_LIMIT=5 -s LOG_LEVEL=INFO
 or
 $ scrapy crawl i2pSpider -s DEPTH_LIMIT=100 -s LOG_LEVEL=DEBUG -s ELASTICSEARCH_TYPE=i2p
 or
