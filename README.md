@@ -36,7 +36,10 @@ service elasticsearch stop
 swapoff -a
 service elasticsearch start
 ```
+<<<<<<< HEAD
 Creating Index Settings:
+=======
+>>>>>>> upstream/ahmia-redesign
 
 ```sh
 $ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
