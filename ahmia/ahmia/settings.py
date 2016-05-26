@@ -11,10 +11,10 @@
 from scrapy import log
 import requests  # To fetch the list of banned domains
 
-BOT_NAME = 'onionElasticBot'
+BOT_NAME = 'ahmia'
 
-SPIDER_MODULES = ['onionElasticBot.spiders']
-NEWSPIDER_MODULE = 'onionElasticBot.spiders'
+SPIDER_MODULES = ['ahmia.spiders']
+NEWSPIDER_MODULE = 'ahmia.spiders'
 
 ELASTICSEARCH_SERVER = 'localhost' # If not 'localhost' prepend 'http://'
 ELASTICSEARCH_PORT = 9200 # If port 80 leave blank
@@ -49,16 +49,16 @@ ROBOTSTXT_OBEY=True
 
 # Middlewares
 DOWNLOADER_MIDDLEWARES = {
-    'onionElasticBot.middleware.ProxyMiddleware': 100,
-    'onionElasticBot.middleware.FilterBannedDomains': 200,
-    'onionElasticBot.middleware.FilterFakeDomains': 300,
-    'onionElasticBot.middleware.FilterResponses': 400,
-    'onionElasticBot.middleware.SubDomainLimit': 500,
+    'ahmia.middleware.ProxyMiddleware': 100,
+    'ahmia.middleware.FilterBannedDomains': 200,
+    'ahmia.middleware.FilterFakeDomains': 300,
+    'ahmia.middleware.FilterResponses': 400,
+    'ahmia.middleware.SubDomainLimit': 500,
 }
 
 # Pipelines
 ITEM_PIPELINES = {
-    'onionElasticBot.pipelines.AddTimestampPipeline': 100,
+    'ahmia.pipelines.AddTimestampPipeline': 100,
     'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 1000,
 }
 

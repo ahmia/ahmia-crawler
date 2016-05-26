@@ -6,14 +6,14 @@ import os
 import html2text
 from scrapy.conf import settings
 
-from onionElasticBot.items import CrawledWebsiteItem
+from ahmia.items import CrawledWebsiteItem
 from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 
 
-class OnionSpider(CrawlSpider):
-    name = "OnionSpider"
+class i2pSpider(CrawlSpider):
+    name = "i2pSpider"
     ALLOWED_DOMAINS = settings.get('ALLOWED_DOMAINS')
 
     if ALLOWED_DOMAINS and os.path.isfile(ALLOWED_DOMAINS):
@@ -23,7 +23,7 @@ class OnionSpider(CrawlSpider):
             allowed_domains = f.read().splitlines() # Make it to Python list
             allowed_domains = filter(None, allowed_domains) # Remove empty strings
     else:
-        allowed_domains = ["onion"]
+        allowed_domains = ["i2p"]
 
     TARGET_SITES = settings.get('TARGET_SITES')
 
@@ -34,7 +34,7 @@ class OnionSpider(CrawlSpider):
             start_urls = f.read().splitlines() # Make it to Python list
             start_urls = filter(None, start_urls) # Remove empty strings
     else:
-        start_urls = [ 'https://ahmia.fi/address/', ]
+        start_urls = [ 'http://nekhbet.com/i2p_links.shtml', ]
 
     rules = (Rule(LinkExtractor(), callback='parse_item', follow=True), )
 
@@ -95,7 +95,7 @@ class OnionSpider(CrawlSpider):
         words = []
         for word in string_list:
             # Word must be longer than 0 letter
-            # And shorter than 45
+            # And shorter than 45sudo service polipo restart
             # The longest word in a major English dictionary is
             # Pneumonoultramicroscopicsilicovolcanoconiosis (45 letters)
             if len(word) > 0 and len(word) <= 45:
