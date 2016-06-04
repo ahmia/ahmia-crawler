@@ -1,94 +1,37 @@
-onionElasticBot - Crawl .onion and .i2p websites from the Tor network
-=====================================================================
+![https://ahmia.fi/](https://raw.githubusercontent.com/razorfinger/ahmia/ahmia-redesign/ahmia-logotype.png)
 
-This is a Scrapy project to crawl .onion websites from the Tor network. Saves h1, h2, title, domain, url, plain HTML and words to Elasticsearch or plain JSON.
+Ahmia is the search engine for `.onion` domains on the Tor anonymity
+network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
+in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine
 
-Short guide to the crawler installation
----------------------------------------
+# Installation guide
 
--	Install Elasticsearch and Oracle Java
--	Install Python 2.7
--	Install [TorBalancer](https://github.com/ahmia/TorBalancer)
+## Install dependencies:
 
-Elasticsearch
--------------
-
-/etc/security/limits.conf:
-
-elasticsearch - nofile unlimited
-
-elasticsearch - memlock unlimited
-
-/etc/default/elasticsearch (on CentOS/RH: /etc/sysconfig/elasticsearch):
-
-ES_HEAP_SIZE=2g # Half of your memory, other half is for Lucene
-
-MAX_OPEN_FILES=1065535
-
-MAX_LOCKED_MEMORY=unlimited
-
-/etc/elasticsearch/elasticsearch.yml:
-
-bootstrap.mlockall: true
-
+### Ubuntu 16.04
 ```sh
-service elasticsearch stop
-swapoff -a
-service elasticsearch start
-```
-Creating Index Settings:
-
-```sh
-$ curl -XPUT -i "localhost:9200/crawl/" -d "@./mappings.json"
+# apt-get install build-essential python-pip python-virtualenv
+# apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
+# apt-get install tor polipo jre-default
 ```
 
-Crawling environment
---------------------
-
+### Fedora 23
 ```sh
-$ sudo apt-get install git
-$ sudo apt-get install python-virtualenv
-$ sudo apt-get install python-pip
-$ sudo apt-get install libffi-dev
-$ sudo apt-get install python-dev libxml2-dev libxslt-dev
-$ sudo apt-get install libssl-dev
-$ sudo apt-get install python-twisted
-$ sudo apt-get install python-simplejson
-$ sudo apt-get install gcc
+# dnf install @development-tools redhat-rpm-config python-pip python-virtualenv
+# dnf install libxml-devel libxslt-devel python-devel libffi-devel openssl-devel
+# dnf install tor polipo
 ```
 
-```sh
-$ cd onionElasticBot
-$ virtualenv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-```
-
-Setup TorBalancer
------------------
-
-- [TorBalancer](https://github.com/ahmia/TorBalancer)
-
-
-Run the crawler software
-------------------------
+## Install requirements in a virtual environment
 
 ```sh
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=2 -s ROBOTSTXT_OBEY=0
-or
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=5 -s LOG_LEVEL=INFO
-or
-$ scrapy crawl i2pSpider -s DEPTH_LIMIT=100 -s LOG_LEVEL=DEBUG -s ELASTICSEARCH_TYPE=i2p
-or
-$ scrapy crawl i2pSpider -s DEPTH_LIMIT=1 -s ROBOTSTXT_OBEY=0 -s ELASTICSEARCH_TYPE=i2p
-or
-$ scrapy crawl OnionSpider -o items.json -t json
-or
-$ scrapy crawl OnionSpider -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=targetitemtype
+$ virtualenv /path/to/venv
+$ source /path/to/venv/bin/activate
+(venv)$ pip install -r requirements.txt
 ```
 
-Run crawler forever:
+## Install Elasticsearch
 
-```sh
-$ bash runforever.sh OnionSpider 3600
-```
+Please install elastic search from the official repository thanks to the [official guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-repositories.html)
+
+
