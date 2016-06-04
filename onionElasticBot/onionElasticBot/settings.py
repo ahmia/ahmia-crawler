@@ -11,10 +11,10 @@
 from scrapy import log
 import requests  # To fetch the list of banned domains
 
-BOT_NAME = 'ahmia'
+BOT_NAME = 'onionElasticBot'
 
-SPIDER_MODULES = ['ahmia.spiders']
-NEWSPIDER_MODULE = 'ahmia.spiders'
+SPIDER_MODULES = ['onionElasticBot.spiders']
+NEWSPIDER_MODULE = 'onionElasticBot.spiders'
 
 ELASTICSEARCH_SERVER = 'localhost' # If not 'localhost' prepend 'http://'
 ELASTICSEARCH_PORT = 9200 # If port 80 leave blank
