@@ -4,7 +4,10 @@ Ahmia is the search engine for `.onion` domains on the Tor anonymity
 network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
 in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine
 
-# Installation guide
+# Crawlers installation guide
+
+## Install and configure the elastic search index
+Please use the guide available in [index/](https://github.com/iriahi/ahmia-crawler/tree/master/index)
 
 ## Install dependencies:
 
@@ -12,7 +15,7 @@ in Finland. This repository contains crawlers used by [Ahmia](https://github.com
 ```sh
 # apt-get install build-essential python-pip python-virtualenv
 # apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
-# apt-get install tor polipo default-jre
+# apt-get install tor polipo
 ```
 
 ### Fedora 23
@@ -30,21 +33,11 @@ $ source /path/to/venv/bin/activate
 (venv)$ pip install -r requirements.txt
 ```
 
-## Install Elasticsearch
-
-Please install elastic search from the official repository thanks to the [official guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-repositories.html)
-
-# Configuration
-
-## Configure polipo
+## Configuration
 
 Please find the config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
 
-## Configure elasticsearch
-
-Default configuration is enough to run crawlers in dev mode. You can find a more secure configuration of [/etc/default/elasticsearch]() and [/etc/elasticsearch/elasticsearch.yml]()
-
-# Start services
+## Start proxies
 ```sh
 # systemctl start tor
 # systemctl start polipo
