@@ -47,3 +47,6 @@ Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/b
 Each crawler has its own guide.
 - [onionElasticBot](https://github.com/iriahi/ahmia-crawler/tree/master/onionElasticBot)
 
+# How to use multiple Tor clients ?
+You can setup [TorBalancer](https://github.com/ahmia/TorBalancer) to do this.
+Don't forget to update the bot settings.py
