@@ -4,10 +4,10 @@ Ahmia is the search engine for `.onion` domains on the Tor anonymity
 network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
 in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine
 
-# Crawlers installation guide
+# Prerequisites
+[Ahmia-index](https://github.com/iriahi/ahmia-index) should be installed and running
 
-## Install and configure the elastic search index
-Please use the guide available in [index/](https://github.com/iriahi/ahmia-crawler/tree/master/index)
+# Installation guide
 
 ## Install dependencies:
 
@@ -34,7 +34,6 @@ $ source /path/to/venv/bin/activate
 ```
 
 ## Proxy configuration
-
 Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
 
 ## Start tor and polipo
