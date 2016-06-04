@@ -33,15 +33,17 @@ $ source /path/to/venv/bin/activate
 (venv)$ pip install -r requirements.txt
 ```
 
-## Configuration
+## Proxy configuration
 
-Please find the config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
+Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
 
-## Start proxies
+## Start tor and polipo
 ```sh
 # systemctl start tor
 # systemctl start polipo
-# systemctl start elasticsearch
 ```
 
+# Usage
+Each crawler has its own guide.
+- [onionElasticBot](https://github.com/iriahi/ahmia-crawler/tree/master/onionElasticBot)
 
