@@ -12,7 +12,7 @@ in Finland. This repository contains crawlers used by [Ahmia](https://github.com
 ```sh
 # apt-get install build-essential python-pip python-virtualenv
 # apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
-# apt-get install tor polipo jre-default
+# apt-get install tor polipo default-jre
 ```
 
 ### Fedora 23
