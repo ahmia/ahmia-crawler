@@ -2,7 +2,7 @@
 Crawl .onion and .i2p websites from the Tor network
 
 ## Prerequisistes
-Please follow [installation guide](https://github.com/iriahi/ahmia-crawler)
+Please follow [installation guide](https://github.com/ahmia/ahmia-crawler)
 
 ## Usage
 ```sh
