@@ -20,31 +20,31 @@ class WebSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         super(WebSpider, self).__init__(*args, **kwargs)
-        self.name = NAME
+        self.name = self.NAME
 
         ALLOWED_DOMAINS = settings.get('ALLOWED_DOMAINS')
         if ALLOWED_DOMAINS and os.path.isfile(ALLOWED_DOMAINS):
             # Read a list of URLs from file
             # Create the target file list
             with open(ALLOWED_DOMAINS) as f:
-                allowed_domains = f.read().splitlines() # Make it to Python list
+                self.allowed_domains = f.read().splitlines() # Make it to Python list
                 # Remove empty strings
-                allowed_domains = [d for d in allowed_domains if d]
+                self.allowed_domains = [d for d in allowed_domains if d]
         else:
-            allowed_domains = DEFAULT_ALLOWED_DOMAINS
+            self.allowed_domains = self.DEFAULT_ALLOWED_DOMAINS
 
         TARGET_SITES = settings.get('TARGET_SITES')
         if TARGET_SITES and os.path.isfile(TARGET_SITES):
             # Read a list of URLs from file
             # Create the target file list
             with open(TARGET_SITES) as f:
-                start_urls = f.read().splitlines() # Make it to Python list
+                self.start_urls = f.read().splitlines() # Make it to Python list
                 # Remove empty strings
-                start_urls = [u for u in start_urls if u]
+                self.start_urls = [u for u in start_urls if u]
         else:
-            start_urls = DEFAULT_TARGET_SITES
+            self.start_urls = self.DEFAULT_TARGET_SITES
 
-        rules = (Rule(LinkExtractor(), callback='parse_item', follow=True), )
+        self.rules = (Rule(LinkExtractor(), callback='parse_item', follow=True), )
 
     def parse_item(self, response):
         hxs = Selector(response)
