@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Settings"""
 
 # Scrapy settings for monitor project
 #
@@ -23,7 +24,7 @@ ELASTICSEARCH_PASSWORD = ''
 ELASTICSEARCH_INDEX = 'crawl'
 ELASTICSEARCH_TYPE = 'tor'
 ELASTICSEARCH_UNIQ_KEY = 'url'
-ELASTICSEARCH_LOG_LEVEL= log.DEBUG
+ELASTICSEARCH_LOG_LEVEL = log.DEBUG
 
 # Read domain area from a file, give path
 ALLOWED_DOMAINS = ""
@@ -43,9 +44,9 @@ RETRY_ENABLED = False
 DOWNLOAD_MAXSIZE = 1000000 #Max-limit in bytes
 
 # Crawling depth
-DEPTH_LIMIT=1
+DEPTH_LIMIT = 1
 
-ROBOTSTXT_OBEY=True
+ROBOTSTXT_OBEY = True
 
 # Middlewares
 DOWNLOADER_MIDDLEWARES = {
