@@ -5,7 +5,7 @@ network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
 in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine
 
 # Prerequisites
-[Ahmia-index](https://github.com/iriahi/ahmia-index) should be installed and running
+[Ahmia-index](https://github.com/ahmia/ahmia-index) should be installed and running
 
 # Installation guide
 
@@ -34,7 +34,7 @@ $ source /path/to/venv/bin/activate
 ```
 
 ## Proxy configuration
-Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
+Please use polipo config sample [here](https://github.com/ahmia/ahmia-crawler/blob/master/conf/polipo/config).
 
 ## Start tor and polipo
 ```sh
@@ -44,7 +44,7 @@ Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/b
 
 # Usage
 Each crawler has its own guide.
-- [onionElasticBot](https://github.com/iriahi/ahmia-crawler/tree/master/onionElasticBot)
+- [onionElasticBot](https://github.com/ahmia/ahmia-crawler/tree/master/onionElasticBot)
 
 # How to use multiple Tor clients ?
 You can setup [TorBalancer](https://github.com/ahmia/TorBalancer) to do this.
