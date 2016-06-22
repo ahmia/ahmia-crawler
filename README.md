@@ -1,3 +1,6 @@
+[![Code Health](https://landscape.io/github/iriahi/ahmia-crawler/master/landscape.svg?style=flat)](https://landscape.io/github/iriahi/ahmia-crawler/master)
+[![Requirements Status](https://requires.io/github/iriahi/ahmia-crawler/requirements.svg?branch=master)](https://requires.io/github/iriahi/ahmia-crawler/requirements/?branch=master)
+
 ![https://ahmia.fi/](https://raw.githubusercontent.com/razorfinger/ahmia/ahmia-redesign/ahmia-logotype.png)
 
 Ahmia is the search engine for `.onion` domains on the Tor anonymity
