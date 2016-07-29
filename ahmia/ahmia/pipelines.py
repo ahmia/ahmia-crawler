@@ -112,14 +112,15 @@ class AuthorityPipeline(ElasticSearchPipeline):
         del edges
         logging.debug("Freeing edges list")
 
-        logging.info("Graph created with %(nodes)d nodes and %(edges)d edges." %
-                     {"nodes": total_nodes, "edges": len(self.links)})
+        logging.info("Graph created with %d nodes and %d edges.",
+                     total_nodes,
+                     len(self.links))
         logging.info("Computing pagerank")
         start = time.time()
         idx_to_pageranks = links_graph.pagerank()
         end = time.time()
-        logging.info("Pagerank computed in %(time).2fs" %
-                     {'time': round(end - start, 2)})
+        logging.info("Pagerank computed in %.2fs",
+                     round(end - start, 2))
 
         del links_graph
         logging.debug("Freeing graph")
