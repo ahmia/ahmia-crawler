@@ -20,6 +20,7 @@ from scrapy.conf import settings
 class ProxyMiddleware(object):
     """Middleware for .onion/.i2p addresses."""
     def process_request(self, request, spider):
+        """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         if ".onion" in domain and ".onion." not in domain:
@@ -36,6 +37,7 @@ class FilterBannedDomains(object):
     Middleware to filter requests to banned domains.
     """
     def process_request(self, request, spider):
+        """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         domain = domain.replace("http://", "").replace("https://", "") \
@@ -54,6 +56,7 @@ class FilterFakeDomains(object):
     Middleware to filter requests to fake domains.
     """
     def process_request(self, request, spider):
+        """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         domain = domain.replace("http://", "").replace("https://", "") \
@@ -72,6 +75,7 @@ class SubDomainLimit(object):
     Ignore weird sub domain loops (for instance, rss..rss.rss.something.onion)
     """
     def process_request(self, request, spider):
+        """Process incoming request."""
         hostname = urlparse(request.url).hostname
         if len(hostname.split(".")) > 4:
             # Do not execute this request
@@ -86,6 +90,7 @@ class FilterResponses(object):
 
     @staticmethod
     def is_valid_response(type_whitelist, content_type_header):
+        """Is the response valid?"""
         for type_regex in type_whitelist:
             if re.search(type_regex, content_type_header):
                 return True
