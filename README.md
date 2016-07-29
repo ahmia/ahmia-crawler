@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/iriahi/ahmia-crawler.svg?branch=master)](https://travis-ci.org/iriahi/ahmia-crawler)
 [![Code Health](https://landscape.io/github/iriahi/ahmia-crawler/master/landscape.svg?style=flat)](https://landscape.io/github/iriahi/ahmia-crawler/master)
 [![Requirements Status](https://requires.io/github/iriahi/ahmia-crawler/requirements.svg?branch=master)](https://requires.io/github/iriahi/ahmia-crawler/requirements/?branch=master)
 
