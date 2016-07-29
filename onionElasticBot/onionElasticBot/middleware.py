@@ -10,8 +10,8 @@
 import re
 import random
 import hashlib
+import logging
 from urlparse import urlparse
-from scrapy import log
 from scrapy.exceptions import IgnoreRequest
 
 from scrapy.conf import settings
@@ -46,7 +46,7 @@ class FilterBannedDomains(object):
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, This domain is banned." \
                   .format(request.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
 
 class FilterFakeDomains(object):
@@ -64,7 +64,7 @@ class FilterFakeDomains(object):
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, This domain is fake." \
                   .format(request.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
 
 class SubDomainLimit(object):
@@ -78,7 +78,7 @@ class SubDomainLimit(object):
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, too many sub domains." \
                   .format(request.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
 
 class FilterResponses(object):
@@ -106,5 +106,5 @@ class FilterResponses(object):
         else:
             msg = "Ignoring request {}, content-type was not in whitelist" \
                   .format(response.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()

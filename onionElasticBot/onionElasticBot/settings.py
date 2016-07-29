@@ -9,7 +9,7 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-from scrapy import log
+import logging
 import requests  # To fetch the list of banned domains
 
 BOT_NAME = 'onionElasticBot'
@@ -17,14 +17,14 @@ BOT_NAME = 'onionElasticBot'
 SPIDER_MODULES = ['onionElasticBot.spiders']
 NEWSPIDER_MODULE = 'onionElasticBot.spiders'
 
-ELASTICSEARCH_SERVER = 'localhost' # If not 'localhost' prepend 'http://'
+ELASTICSEARCH_SERVERS = ['localhost'] # If not 'localhost' prepend 'http://'
 ELASTICSEARCH_PORT = 9200 # If port 80 leave blank
 ELASTICSEARCH_USERNAME = ''
 ELASTICSEARCH_PASSWORD = ''
 ELASTICSEARCH_INDEX = 'crawl'
 ELASTICSEARCH_TYPE = 'tor'
 ELASTICSEARCH_UNIQ_KEY = 'url'
-ELASTICSEARCH_LOG_LEVEL = log.DEBUG
+ELASTICSEARCH_LOG_LEVEL = logging.DEBUG
 
 # Read domain area from a file, give path
 ALLOWED_DOMAINS = ""
@@ -37,30 +37,30 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; rv:24.0) Gecko/20100101 Firefox/24.0"
 DOWNLOAD_TIMEOUT = 60 # 60s
 
 # Search engine point of view
-CONCURRENT_REQUESTS = 50
+CONCURRENT_REQUESTS = 5
 LOG_LEVEL = 'INFO'
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
 DOWNLOAD_MAXSIZE = 1000000 #Max-limit in bytes
 
 # Crawling depth
-DEPTH_LIMIT = 1
+DEPTH_LIMIT = 2
 
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Middlewares
 DOWNLOADER_MIDDLEWARES = {
-    'ahmia.middleware.ProxyMiddleware': 100,
-    'ahmia.middleware.FilterBannedDomains': 200,
-    'ahmia.middleware.FilterFakeDomains': 300,
-    'ahmia.middleware.FilterResponses': 400,
-    'ahmia.middleware.SubDomainLimit': 500,
+    'onionElasticBot.middleware.ProxyMiddleware': 100,
+    'onionElasticBot.middleware.FilterBannedDomains': 200,
+    'onionElasticBot.middleware.FilterFakeDomains': 300,
+    'onionElasticBot.middleware.FilterResponses': 400,
+    'onionElasticBot.middleware.SubDomainLimit': 500,
 }
 
 # Pipelines
 ITEM_PIPELINES = {
-    'ahmia.pipelines.AddTimestampPipeline': 100,
-    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 1000,
+    'onionElasticBot.pipelines.ExportLinksPipeline': 100,
+    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 200,
 }
 
 BANNED_DOMAINS = []
@@ -80,6 +80,6 @@ for onion in response.text.split("\n"):
 # port 8118 is for privoxy (Tor)
 # port 4444 and 4445 is for i2p HTTP/HTTPS proxy
 # port 3128 is HAProxy load balancer
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:3128/"] # Tor HTTP proxy
+HTTP_PROXY_TOR_PROXIES = ["http://localhost:8123/"] # Tor HTTP proxy
 HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
 HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost
