@@ -6,6 +6,7 @@ import os
 import datetime
 '''import html2text
 from langdetect import detect'''
+import hashlib
 
 from six.moves.urllib.parse import urljoin
 
@@ -86,7 +87,7 @@ class WebSpider(CrawlSpider):
             # Extract the link's URL
             link_str = " ".join(link.xpath('@href').extract()).replace("\n", "")
             link_str = urljoin(get_base_url(response), link_str)
-            link_obj['link'] = link_str
+            link_obj['link'] = hashlib.sha1(link_str).hexdigest()
             # Extract the links value
             link_name_str = " ".join(link.xpath('text()').extract())
             link_name_str = link_name_str.replace("\n", "")

@@ -59,8 +59,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Pipelines
 ITEM_PIPELINES = {
-    'onionElasticBot.pipelines.ExportLinksPipeline': 100,
-    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 200,
+    'onionElasticBot.pipelines.AnchorTextPipeline': 100,
+    'onionElasticBot.pipelines.AuthorityPipeline': 200,
+    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 300,
 }
 
 BANNED_DOMAINS = []
