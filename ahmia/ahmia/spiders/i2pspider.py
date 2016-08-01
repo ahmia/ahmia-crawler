@@ -12,9 +12,3 @@ class InvisibleInternetSpider(WebSpider):
     name = "ahmia-i2p"
     default_allowed_domains = ["i2p"]
     default_target_sites = ['http://nekhbet.com/i2p_links.shtml',]
-
-    def is_url_valid(self, url):
-        """
-        Should we crawl the following url?
-        """
-        return True

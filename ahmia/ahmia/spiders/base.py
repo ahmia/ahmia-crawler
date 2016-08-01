@@ -7,14 +7,13 @@ It's a virtual class and shouldn't be used to crawl anything.
 import datetime
 import hashlib
 import os
-from urlparse import urlparse, urljoin
+from urlparse import urlparse
 
 from scrapy.conf import settings
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy.utils.url import canonicalize_url
-from scrapy.utils.response import get_base_url
 
 from ahmia.items import DocumentItem, LinkItem
 
@@ -59,39 +58,20 @@ class WebSpider(CrawlSpider):
                             callback=self.parse_item,
                             follow=True), )
 
-    def is_url_valid(self, url):
-        """
-        Should we crawl the following url ?
-        """
-        raise NotImplementedError
-
     def parse_item(self, response):
         """
         Parse a response into a DocumentItem.
         """
-
-        # Is it a .onion url ?
-        doc_url = canonicalize_url(response.url)
-        doc_hostname = urlparse(doc_url).hostname
-
-        if not self.is_url_valid(doc_hostname):
-            return None
-
         hxs = Selector(response)
         doc = DocumentItem()
-
-        # We don't want to reset the array
-        # doc['anchors'] = []
-
-
-        doc['url'] = doc_url
+        doc['url'] = canonicalize_url(response.url)
         try:
             doc['meta'] = hxs.xpath('//meta[@name=\'description\']/@content') \
                              .extract()[0]
         except IndexError:
             doc['meta'] = None
         # Add the domain
-        doc['domain'] = doc_hostname
+        doc['domain'] = urlparse(doc['url']).hostname
         try:
             doc['title'] = hxs.xpath('//title/text()').extract()[0]
         except IndexError:
@@ -104,27 +84,22 @@ class WebSpider(CrawlSpider):
         doc["updated_on"] = datetime.datetime.now().strftime(
             "%Y-%m-%dT%H:%M:%S")
 
+        # We store this to avoid computing it each iteration (L100)
+        source = hashlib.sha1(doc['url']).hexdigest()
+
         doc['links'] = []
-        links = hxs.xpath('//a')
-        for link in links:
-            link_obj = LinkItem()
-
-            # Extract the link's URL
-            link_url = "".join(link.xpath('@href').extract()).replace("\n", "")
-            link_url = canonicalize_url(urljoin(get_base_url(response),
-                                                link_url))
-            if not self.is_url_valid(link_url):
-                continue
-
-            link_obj['target'] = hashlib.sha1(link_url).hexdigest()
-            link_obj['source'] = hashlib.sha1(doc_url).hexdigest()
-            # Extract the links value
-            anchor = " ".join(link.xpath('text()')\
-                              .extract()) \
-                        .replace("\n", "") \
-                        .strip()
-            link_obj['anchor'] = anchor
-            doc['links'].append(dict(link_obj))
+        # Same code than what is used to follow links, without the seen set
+        for rule in self._rules:
+            links = rule.link_extractor.extract_links(response)
+            if links and rule.process_links:
+                links = rule.process_links(links)
+            for link in links:
+                link_obj = LinkItem()
+                link_obj['target'] = \
+                    hashlib.sha1(canonicalize_url(link.url)).hexdigest()
+                link_obj['source'] = source
+                link_obj['anchor'] = link.text
+                doc['links'].append(dict(link_obj))
 
         return doc
 
