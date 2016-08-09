@@ -65,7 +65,7 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                     "url": item['target'],
                     "domain": urlparse(item['target']).hostname,
                     "updated_on": datetime.now().strftime(
-                        "%Y-%m-%dT%H:%M:%S"))
+                        "%Y-%m-%dT%H:%M:%S")
                 }
             }
 
