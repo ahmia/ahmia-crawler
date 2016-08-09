@@ -89,7 +89,7 @@ class WebSpider(CrawlSpider):
                 query={
                     "query": {
                         "exists": {
-                            "field": "url"
+                            "field": "content"
                         }
                     }
                 },
