@@ -129,7 +129,8 @@ class WebSpider(CrawlSpider):
         itemproc = self.crawler.engine.scraper.itemproc
         for i, score in enumerate(links_graph.pagerank()):
             itemproc.process_item(AuthorityItem(url=links_graph.vs["name"][i],
-                                                score=score))
+                                                score=score),
+                                  self)
 
     def parse(self, response):
         """ Parse a response. This new version yields every request
