@@ -11,6 +11,8 @@ class OnionSpider(WebSpider):
     """
     name = "ahmia-tor"
     default_allowed_domains = ["onion"]
-    default_target_sites = ['https://ahmia.fi/address/',
-                            'http://torlinks6ob7o7zq.onion/',
-                            'http://tt3j2x4k5ycaa5zt.onion/onions.php',]
+    default_target_sites = \
+        ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
+         'http://tt3j2x4k5ycaa5zt.onion/',
+         'https://blockchainbdgpzk.onion/',
+         'http://7cbqhjnlkivmigxf.onion/']

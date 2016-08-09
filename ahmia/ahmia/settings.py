@@ -24,7 +24,7 @@ ELASTICSEARCH_PASSWORD = ''
 ELASTICSEARCH_INDEX = 'crawl'
 ELASTICSEARCH_TYPE = 'tor'
 ELASTICSEARCH_UNIQ_KEY = 'url'
-ELASTICSEARCH_LOG_LEVEL = logging.DEBUG
+ELASTICSEARCH_LOG_LEVEL = logging.INFO
 
 # Read domain area from a file, give path
 ALLOWED_DOMAINS = ""
@@ -32,21 +32,25 @@ ALLOWED_DOMAINS = ""
 TARGET_SITES = ""
 
 # Identify as normal Tor Browser
-USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; rv:24.0) Gecko/20100101 Firefox/24.0"
+USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0"
 
 DOWNLOAD_TIMEOUT = 60 # 60s
+DOWNLOAD_DELAY = 0.25
 
 # Search engine point of view
-CONCURRENT_REQUESTS = 5
+CONCURRENT_REQUESTS = 100
 LOG_LEVEL = 'INFO'
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
 DOWNLOAD_MAXSIZE = 1000000 #Max-limit in bytes
+REACTOR_THREADPOOL_MAXSIZE = 20
+REDIRECT_ENABLED = False
+AJAXCRAWL_ENABLED = True
 
 # Crawling depth
-DEPTH_LIMIT = 2
+DEPTH_LIMIT = 1
 
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Middlewares
 DOWNLOADER_MIDDLEWARES = {
@@ -59,9 +63,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Pipelines
 ITEM_PIPELINES = {
-    'ahmia.pipelines.AnchorTextPipeline': 100,
-    'ahmia.pipelines.AuthorityPipeline': 200,
-    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 300,
+    'ahmia.pipelines.CustomElasticSearchPipeline': 100
 }
 
 BANNED_DOMAINS = []
