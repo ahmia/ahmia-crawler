@@ -8,6 +8,7 @@ graph and compute the pagerank algorithm on it.
 """
 from datetime import datetime
 import hashlib
+from urlparse import urlparse
 
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
@@ -61,7 +62,10 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                 },
                 "upsert": {
                     "anchors": [item["anchor"]],
-                    "url": item['target']
+                    "url": item['target'],
+                    "domain": urlparse(item['target']).hostname,
+                    "updated_on": datetime.now().strftime(
+                        "%Y-%m-%dT%H:%M:%S"))
                 }
             }
 
