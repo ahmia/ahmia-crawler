@@ -17,10 +17,7 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
-ELASTICSEARCH_SERVERS = ['localhost'] # If not 'localhost' prepend 'http://'
-ELASTICSEARCH_PORT = 9200 # If port 80 leave blank
-ELASTICSEARCH_USERNAME = ''
-ELASTICSEARCH_PASSWORD = ''
+ELASTICSEARCH_SERVERS = ['http://localhost:9200']
 ELASTICSEARCH_INDEX = 'crawl'
 ELASTICSEARCH_TYPE = 'tor'
 ELASTICSEARCH_UNIQ_KEY = 'url'
