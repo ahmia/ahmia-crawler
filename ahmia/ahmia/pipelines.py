@@ -20,6 +20,8 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
     In this version, the index_item method is different because to it needs to
     handle different type of items.
     """
+    items_buffer = []
+
     def index_item(self, item):
         """
         Item are indexed here.
