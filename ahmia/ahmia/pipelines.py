@@ -39,13 +39,18 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                                                   index_suffix_format)
 
         if isinstance(item, DocumentItem):
+            upsert_itms = (("is_fake", False),
+                           ("is_banned", False),
+                           ("authority", 0.0000000001),
+                           ("anchors", None))
+            doc_dict = dict(item)
             index_action = {
                 '_index': index_name,
                 '_type': self.settings['ELASTICSEARCH_TYPE'],
                 '_id': hashlib.sha1(item['url']).hexdigest(),
-                'doc': dict(item),
+                'doc': doc_dict,
                 "_op_type": "update",
-                "doc_as_upsert" : True
+                "upsert" : dict(doc_dict.items() + upsert_itms),
             }
 
         elif isinstance(item, LinkItem):
@@ -67,7 +72,10 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                     "url": item['target'],
                     "domain": urlparse(item['target']).hostname,
                     "updated_on": datetime.now().strftime(
-                        "%Y-%m-%dT%H:%M:%S")
+                        "%Y-%m-%dT%H:%M:%S"),
+                    "is_fake": False,
+                    "is_banned": False,
+                    "authority": 0.0000000001
                 }
             }
 
@@ -79,8 +87,7 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                 "_id": item['url'],
                 "doc": {
                     "authority": item['score']
-                },
-                "doc_as_upsert" : True
+                }
             }
         else:
             return
