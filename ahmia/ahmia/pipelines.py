@@ -39,10 +39,10 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                                                   index_suffix_format)
 
         if isinstance(item, DocumentItem):
-            upsert_itms = (("is_fake", False),
+            upsert_itms = [("is_fake", False),
                            ("is_banned", False),
                            ("authority", 0.0000000001),
-                           ("anchors", None))
+                           ("anchors", None)]
             doc_dict = dict(item)
             index_action = {
                 '_index': index_name,
