@@ -32,7 +32,7 @@ TARGET_SITES = ""
 USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0"
 
 DOWNLOAD_TIMEOUT = 60 # 60s
-DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 1
 
 # Search engine point of view
 CONCURRENT_REQUESTS = 100
