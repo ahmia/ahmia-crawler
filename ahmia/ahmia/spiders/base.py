@@ -168,8 +168,7 @@ class WebSpider(CrawlSpider):
         doc_loader.add_xpath('meta', '//meta[@name=\'description\']/@content')
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
-        doc_loader.add_value('content', response.body.decode(
-            response.headers.encoding or "utf-8", 'ignore'))
+        doc_loader.add_xpath('content', '//body')
         doc_loader.add_value('content_type', response.headers['Content-type'])
         doc_loader.add_value('updated_on', datetime.datetime.now().strftime(
             "%Y-%m-%dT%H:%M:%S"))
