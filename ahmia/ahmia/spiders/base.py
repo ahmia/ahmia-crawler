@@ -70,37 +70,62 @@ class WebSpider(CrawlSpider):
 
     def build_links(self):
         """ Build a complete list of links from html in elasticsearch """
+        def binarySearch(array, key, low, high):
+            """ Fast search in a sorted array """
+            if low > high: # termination case
+                return -1
+            middle = (low + high) / 2 # gets the middle of the array
+            if array[middle] == key:  # if the middle is our key
+                return middle
+            elif key < array[middle]: # our key might be in the left sub-array
+                return binarySearch(array, key, low, middle-1)
+            else:                     # our key might be in the right sub-array
+                return binarySearch(array, key, middle+1, high)
+
         es_obj = ElasticSearchPipeline.from_crawler(self.crawler).es
         new_links = []
-        urls = [
-            url['_source']['url'] for url in scan(
+        hashes = sorted([
+            url['_id']for url in scan(
                 es_obj,
                 query={
                     "query": {
                         "exists": {
-                            "field": "content"
+                            "field": "url"
                         }
                     }
                 },
                 index=self.settings['ELASTICSEARCH_INDEX'],
                 doc_type=self.settings['ELASTICSEARCH_TYPE'],
-                _source_include=["url",])
-        ]
+                _source_exclude=["*"])
+        ])
+        urls_iter = scan(
+            es_obj,
+            query={
+                "query": {
+                    "exists": {
+                        "field": "content"
+                    }
+                }
+            },
+            index=self.settings['ELASTICSEARCH_INDEX'],
+            doc_type=self.settings['ELASTICSEARCH_TYPE'],
+            _source_include=["content", "url"]
+        )
 
-        for url in urls:
-            id_ = hashlib.sha1(url).hexdigest()
-            content = es_obj.get(index=self.settings['ELASTICSEARCH_INDEX'],
-                                 doc_type=self.settings['ELASTICSEARCH_TYPE'],
-                                 id=id_,
-                                 _source_include=["content",])
-            content = content['_source']['content']
+        for hit in urls_iter:
+            id_ = hit['_id']
+            url = hit['_source']['url']
+            content = hit['_source']['content']
             if isinstance(content, str):
                 content = unicode(content, "utf-8")
             try:
                 response = HtmlResponse(url, encoding="utf-8", body=content)
                 for request in self._requests_to_follow(response):
+                    hash_target = hashlib.sha1(request.url).hexdigest()
+                    if binarySearch(hashes, hash_target, 0, len(hashes)-1) < 0:
+                        continue
                     new_links.append((id_,
-                                      hashlib.sha1(request.url).hexdigest()))
+                                      hash_target))
             except TypeError:
                 pass
 
