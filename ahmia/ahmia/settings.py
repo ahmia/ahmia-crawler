@@ -53,7 +53,6 @@ ROBOTSTXT_OBEY = True
 DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.ProxyMiddleware': 100,
     'ahmia.middleware.FilterBannedDomains': 200,
-    'ahmia.middleware.FilterFakeDomains': 300,
     'ahmia.middleware.FilterResponses': 400,
     'ahmia.middleware.SubDomainLimit': 500,
 }
@@ -73,7 +72,7 @@ FAKE_DOMAINS = []
 response = requests.get('https://ahmia.fi/static/fakelist.txt')
 for onion in response.text.split("\n"):
     if len(onion) is 16:
-        FAKE_DOMAINS.append(onion)
+        FAKE_DOMAINS.append('%s.onion' % onion)
 
 # HTTP proxy settings
 # port 8123 is for polipo (Tor)

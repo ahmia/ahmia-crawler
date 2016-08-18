@@ -18,7 +18,6 @@ from scrapy import signals
 from scrapy.conf import settings
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
-from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
@@ -31,8 +30,7 @@ class WebSpider(CrawlSpider):
     """
     name = None
 
-    default_allowed_domains = None
-    default_target_sites = None
+    default_start_url = None
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -42,20 +40,11 @@ class WebSpider(CrawlSpider):
         return spider
 
     def __init__(self, *args, **kwargs):
+        self.rules = [Rule(self.get_link_extractor(),
+                           callback=self.parse_item,
+                           process_links=self.limit_links,
+                           follow=True)]
         super(WebSpider, self).__init__(*args, **kwargs)
-
-        allowed_domains = settings.get('ALLOWED_DOMAINS')
-        if allowed_domains and os.path.isfile(allowed_domains):
-            # Read a list of URLs from file
-            # Create the target file list
-            with open(allowed_domains) as allowed_domains_file:
-                # Make it to Python list
-                self.allowed_domains = allowed_domains_file.read().splitlines()
-                # Remove empty strings
-                self.allowed_domains = [d for d in self.allowed_domains if d]
-        else:
-            self.allowed_domains = self.default_allowed_domains
-
         target_sites = settings.get('TARGET_SITES')
         if target_sites and os.path.isfile(target_sites):
             # Read a list of URLs from file
@@ -66,12 +55,12 @@ class WebSpider(CrawlSpider):
                 # Remove empty strings
                 self.start_urls = [u for u in self.start_urls if u]
         else:
-            self.start_urls = self.default_target_sites
+            self.start_urls = self.default_start_url
 
-        self._rules = (Rule(LinkExtractor(),
-                            callback=self.parse_item,
-                            process_links=self.limit_links,
-                            follow=True),)
+    def get_link_extractor(self):
+        """ Returns the LinkExtractor.
+        Must be overriden in each Spider. """
+        raise NotImplementedError
 
     def limit_links(self, links):
         """ Reduce the number of links for each page """
