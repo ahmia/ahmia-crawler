@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/iriahi/ahmia-crawler.svg?branch=master)](https://travis-ci.org/iriahi/ahmia-crawler)
 [![Code Health](https://landscape.io/github/iriahi/ahmia-crawler/master/landscape.svg?style=flat)](https://landscape.io/github/iriahi/ahmia-crawler/master)
 [![Requirements Status](https://requires.io/github/iriahi/ahmia-crawler/requirements.svg?branch=master)](https://requires.io/github/iriahi/ahmia-crawler/requirements/?branch=master)
 
@@ -8,7 +9,7 @@ network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
 in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine
 
 # Prerequisites
-[Ahmia-index](https://github.com/ahmia/ahmia-index) should be installed and running
+[Ahmia-index](https://github.com/iriahi/ahmia-index) should be installed and running
 
 # Installation guide
 
@@ -37,7 +38,7 @@ $ source /path/to/venv/bin/activate
 ```
 
 ## Proxy configuration
-Please use polipo config sample [here](https://github.com/ahmia/ahmia-crawler/blob/master/conf/polipo/config).
+Please use polipo config sample [here](https://github.com/iriahi/ahmia-crawler/blob/master/conf/polipo/config).
 
 ## Start tor and polipo
 ```sh
@@ -46,8 +47,8 @@ Please use polipo config sample [here](https://github.com/ahmia/ahmia-crawler/bl
 ```
 
 # Usage
-Each crawler has its own guide.
-- [onionElasticBot](https://github.com/ahmia/ahmia-crawler/tree/master/onionElasticBot)
+Please refer to the crawler guide.
+- [ahmia](https://github.com/iriahi/ahmia-crawler/tree/master/ahmia)
 
 # How to use multiple Tor clients ?
 You can setup [TorBalancer](https://github.com/ahmia/TorBalancer) to do this.

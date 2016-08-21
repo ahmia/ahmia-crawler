@@ -10,8 +10,8 @@
 import re
 import random
 import hashlib
+import logging
 from urlparse import urlparse
-from scrapy import log
 from scrapy.exceptions import IgnoreRequest
 
 from scrapy.conf import settings
@@ -19,7 +19,8 @@ from scrapy.conf import settings
 
 class ProxyMiddleware(object):
     """Middleware for .onion/.i2p addresses."""
-    def process_request(self, request, spider):
+    def process_request(self, request, spider): # pylint:disable=unused-argument
+        """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         if ".onion" in domain and ".onion." not in domain:
@@ -35,7 +36,8 @@ class FilterBannedDomains(object):
     """
     Middleware to filter requests to banned domains.
     """
-    def process_request(self, request, spider):
+    def process_request(self, request, spider): # pylint:disable=unused-argument
+        """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         domain = domain.replace("http://", "").replace("https://", "") \
@@ -46,39 +48,22 @@ class FilterBannedDomains(object):
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, This domain is banned." \
                   .format(request.url)
-            log.msg(msg, level=log.INFO)
-            raise IgnoreRequest()
-
-class FilterFakeDomains(object):
-    """
-    Middleware to filter requests to fake domains.
-    """
-    def process_request(self, request, spider):
-        parsed_uri = urlparse(request.url)
-        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
-        domain = domain.replace("http://", "").replace("https://", "") \
-                                              .replace(".onion/", "")
-        banned_domains = settings.get('FAKE_DOMAINS')
-        if domain in banned_domains:
-            # Do not execute this request
-            request.meta['proxy'] = ""
-            msg = "Ignoring request {}, This domain is fake." \
-                  .format(request.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
 
 class SubDomainLimit(object):
     """
     Ignore weird sub domain loops (for instance, rss..rss.rss.something.onion)
     """
-    def process_request(self, request, spider):
+    def process_request(self, request, spider): # pylint:disable=unused-argument
+        """Process incoming request."""
         hostname = urlparse(request.url).hostname
         if len(hostname.split(".")) > 4:
             # Do not execute this request
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, too many sub domains." \
                   .format(request.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
 
 class FilterResponses(object):
@@ -86,12 +71,13 @@ class FilterResponses(object):
 
     @staticmethod
     def is_valid_response(type_whitelist, content_type_header):
+        """Is the response valid?"""
         for type_regex in type_whitelist:
             if re.search(type_regex, content_type_header):
                 return True
         return False
 
-    def process_response(self, request, response, spider):
+    def process_response(self, request, response, spider): # pylint:disable=unused-argument
         """
         Only allow HTTP response types that that match the given list of
         filtering regexs
@@ -106,5 +92,5 @@ class FilterResponses(object):
         else:
             msg = "Ignoring request {}, content-type was not in whitelist" \
                   .format(response.url)
-            log.msg(msg, level=log.INFO)
+            logging.info(msg)
             raise IgnoreRequest()
