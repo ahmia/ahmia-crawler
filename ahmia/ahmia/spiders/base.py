@@ -21,6 +21,10 @@ from scrapy.http.response.html import HtmlResponse
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
+# For text field
+import html2text
+from scrapy.selector import HtmlXPathSelector
+
 from ahmia.items import DocumentItem, LinkItem, AuthorityItem
 
 class WebSpider(CrawlSpider):
@@ -161,6 +165,18 @@ class WebSpider(CrawlSpider):
         is remaining in the pipeline """
         spider.compute_pagerank()
 
+    def detect_encoding(self, response):
+        return response.headers.encoding or "utf-8"
+
+    def html2string(self, response):
+        """HTML 2 string converter. Returns a string."""
+        converter = html2text.HTML2Text()
+        converter.ignore_links = True
+        encoding = self.detect_encoding(response)
+        decoded_html = response.body.decode(encoding, 'ignore')
+        string = converter.handle(decoded_html)
+        return string
+
     def parse_item(self, response):
         """ Parse a response into a DocumentItem. """
         doc_loader = ItemLoader(item=DocumentItem(), response=response)
@@ -168,7 +184,17 @@ class WebSpider(CrawlSpider):
         doc_loader.add_xpath('meta', '//meta[@name=\'description\']/@content')
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
-        doc_loader.add_xpath('content', '//body')
+
+        # Populate text field
+        hxs = HtmlXPathSelector(response)
+        title_list = hxs.xpath('//title/text()').extract()
+        title = ' '.join(title_list)
+        body_text = self.html2string(response)
+        if type(body_text) is list:
+            body_text = ' '.join(body_text)
+        text = title + " " + body_text
+        doc_loader.add_value('content', text)
+
         doc_loader.add_value('content_type', response.headers['Content-type'])
         doc_loader.add_value('updated_on', datetime.datetime.now().strftime(
             "%Y-%m-%dT%H:%M:%S"))

@@ -16,7 +16,7 @@ control_char_re = re.compile('[%s]' % re.escape(control_chars))
 
 def remove_control_chars(s):
     """ Returns a string without non-printable characters like \n \r \t """
-    return control_char_re.sub('', s)
+    return control_char_re.sub(' ', s)
 
 class DocumentItem(Item):
     """
