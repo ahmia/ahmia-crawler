@@ -33,6 +33,7 @@ class DocumentItem(Item):
     """
     url = Field(output_processor=TakeFirst())
     h1 = Field(output_processor=TakeFirst())
+    raw_title = Field(output_processor=TakeFirst())
     raw_url = Field(output_processor=TakeFirst())
     raw_text = Field(output_processor=TakeFirst())
     title = Field(input_processor=MapCompose(remove_control_chars),
