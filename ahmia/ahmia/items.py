@@ -32,6 +32,9 @@ class DocumentItem(Item):
     Updated_on is the datetime of the last update.
     """
     url = Field(output_processor=TakeFirst())
+    h1 = Field(output_processor=TakeFirst())
+    raw_url = Field(output_processor=TakeFirst())
+    raw_text = Field(output_processor=TakeFirst())
     title = Field(input_processor=MapCompose(remove_control_chars),
                   output_processor=TakeFirst())
     meta = Field(input_processor=MapCompose(remove_control_chars),

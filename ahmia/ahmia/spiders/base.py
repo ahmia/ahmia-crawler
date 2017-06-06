@@ -190,10 +190,15 @@ class WebSpider(CrawlSpider):
         title_list = hxs.xpath('//title/text()').extract()
         title = ' '.join(title_list)
         body_text = self.html2string(response)
-        if type(body_text) is list:
-            body_text = ' '.join(body_text)
         text = title + " " + body_text
         doc_loader.add_value('content', text)
+        doc_loader.add_value('raw_text', text)
+
+        doc_loader.add_value('raw_title', title)
+        doc_loader.add_value('raw_url', response.url)
+
+        h1_list = hxs.xpath("//h1/text()").extract()
+        doc_loader.add_value('h1', " ".join(h1_list))
 
         doc_loader.add_value('content_type', response.headers['Content-type'])
         doc_loader.add_value('updated_on', datetime.datetime.now().strftime(
