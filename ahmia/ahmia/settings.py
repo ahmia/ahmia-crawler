@@ -57,9 +57,12 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
+#RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
+
 # Pipelines
 ITEM_PIPELINES = {
-    'ahmia.pipelines.CustomElasticSearchPipeline': 100
+    #'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
+    'ahmia.pipelines.CustomElasticSearchPipeline': 200,
 }
 
 BANNED_DOMAINS = []
