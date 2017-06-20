@@ -1,12 +1,12 @@
 """
-Opens HTTP proxy to port 4444
+Opens HTTP proxy to port 14444
 Traffic goes through socks5 on 127.0.0.1:9050 which is Tor
 For crawling purposes overrides HTTP status code 500 to 200!
 
 python3 http_tor_proxy.py
 
 Test:
-curl -x http://localhost:4444 http://msydqstlz2kzerdg.onion/
+curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
 """
 
 import socks
@@ -28,7 +28,7 @@ import urlparse2
 import urllib
 import urllib.request
 
-PORT = 4444
+PORT = 14444
 
 class Proxy(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
