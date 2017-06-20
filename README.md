@@ -51,7 +51,7 @@ $ systemctl start polipo
 $ sudo pip3 install PySocks
 $ sudo pip3 install urlparse2
 $ python http_tor_proxy.py
-$ curl -x http://localhost:4444 http://msydqstlz2kzerdg.onion/
+$ curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
 ```
 
 # Usage

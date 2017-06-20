@@ -36,7 +36,7 @@ class Proxy(http.server.SimpleHTTPRequestHandler):
         # Catch HTTP errors
         try:
             response = urllib.request.urlopen(self.path)
-        except urllib.HTTPError as error:
+        except urllib.request.HTTPError as error:
             response = error
             # Change HTTP error code 500 to 200
             if response.code == 500:
@@ -50,7 +50,7 @@ class Proxy(http.server.SimpleHTTPRequestHandler):
         try:
             post_data = urllib.urlencode(post_data)
             response = urllib.request.urlopen(self.path, post_data)
-        except urllib.HTTPError as error:
+        except urllib.request.HTTPError as error:
             response = error
             # Change HTTP error code 500 to 200
             if response.code == 500:
