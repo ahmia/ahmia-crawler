@@ -60,6 +60,8 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
+#RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
+
 # Pipelines
 ITEM_PIPELINES = {
     'ahmia.pipelines.CustomElasticSearchPipeline': 100,
@@ -83,6 +85,7 @@ for onion in response.text.split("\n"):
 # port 8118 is for privoxy (Tor)
 # port 4444 and 4445 is for i2p HTTP/HTTPS proxy
 # port 3128 is HAProxy load balancer
+# port 14444 pure HTTP socks tor proxy
 HTTP_PROXY_TOR_PROXIES = ["http://localhost:8123/"] # Tor HTTP proxy
 HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
 HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost

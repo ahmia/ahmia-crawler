@@ -17,16 +17,16 @@ in Finland. This repository contains crawlers used by [Ahmia](https://github.com
 
 ### Ubuntu 16.04
 ```sh
-# apt-get install build-essential python-pip python-virtualenv
-# apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
-# apt-get install tor polipo
+$ apt-get install build-essential python-pip python-virtualenv
+$ apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
+$ apt-get install tor polipo
 ```
 
 ### Fedora 23
 ```sh
-# dnf install @development-tools redhat-rpm-config python-pip python-virtualenv
-# dnf install libxml-devel libxslt-devel python-devel libffi-devel openssl-devel
-# dnf install tor polipo
+$ dnf install @development-tools redhat-rpm-config python-pip python-virtualenv
+$ dnf install libxml-devel libxslt-devel python-devel libffi-devel openssl-devel
+$ dnf install tor polipo
 ```
 
 ## Install requirements in a virtual environment
@@ -42,8 +42,16 @@ Please use polipo config sample [here](https://github.com/ahmia/ahmia-crawler/bl
 
 ## Start tor and polipo
 ```sh
-# systemctl start tor
-# systemctl start polipo
+$ systemctl start tor
+$ systemctl start polipo
+```
+
+## Or use with own python HTTP proxy.
+```sh
+$ sudo pip3 install PySocks
+$ sudo pip3 install urlparse2
+$ python http_tor_proxy.py
+$ curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
 ```
 
 # Usage
