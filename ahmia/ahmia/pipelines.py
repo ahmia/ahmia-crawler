@@ -14,8 +14,9 @@ from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
 from .items import DocumentItem, LinkItem, AuthorityItem
 from simhash import Simhash
-import re
 import requests
+import re
+=======
 
 def simhash(s):
         width = 3
