@@ -13,8 +13,64 @@ from urlparse import urlparse
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
 from .items import DocumentItem, LinkItem, AuthorityItem
-
+from simhash import Simhash
 import requests
+
+def simhash(s):
+        width = 3
+        sim = s.strip()
+        sim = sim.lower()
+        sim.replace(",","")
+        sim.replace("\n","")
+        sim = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', sim, flags=re.MULTILINE)
+        sim = re.sub('mailto://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', sim, flags=re.MULTILINE)
+        sim = re.sub(r'[^\w]+', '', sim)
+        sim = re.sub('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$', '',sim, flags = re.MULTILINE)
+        features =  [sim[i:i + width] for i in range(max(len(sim) - width + 1, 1))]
+        shash = Simhash(features)
+        return shash
+
+
+class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
+    """
+    HistoricalElasticSearchPipeline indexes new DocumentItems to ES, if they do 
+    not already exist. It also indexes a crawl record
+    """
+    def index_item(self, item):
+        index_name = self.settings['ELASTICSEARCH_RESEARCH_INDEX']
+        index_suffix_format = self.settings.get(
+            'ELASTICSEARCH_INDEX_DATE_FORMAT', None)
+
+        if index_suffix_format:
+            index_name += "-" + datetime.strftime(datetime.now(),
+                                                  index_suffix_format)
+
+        if isinstance(item, DocumentItem):
+            content_index_action = {
+                '_index': index_name,
+                '_type': self.settings['ELASTICSEARCH_CONTENT_TYPE'],
+                '_id': simhash(item['content']),
+                'title': item['title'],
+                'content': item['content']
+            }
+            self.items_buffer.append(content_index_action)
+            crawl_index_action = {
+                '_index': index_name,
+                '_type': self.settings['ELASTICSEARCH_CRAWL_TYPE'],
+                'crawl_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                'content_id': simhash(item['content'])
+             }
+             self.items_buffer.append(crawl_index_action)              
+
+        else:
+            return
+
+
+        if len(self.items_buffer) >= \
+          self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
+            self.send_items()
+            self.items_buffer = []
+
 
 #import json #### For research
 #from scrapy.conf import settings #### For research

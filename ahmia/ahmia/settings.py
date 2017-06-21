@@ -22,7 +22,10 @@ ELASTICSEARCH_SERVERS = ['http://localhost:9200'] # For scrapy-elasticsearch
 ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0] # For special update
 # Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
 ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
+ELASTICSEARCH_RESEARCH_INDEX = 'research'
 ELASTICSEARCH_TYPE = 'tor'
+ELASTICSEARCH_CONTENT_TYPE = 'content'
+ELASTICSEARCH_CRAWL_TYPE = 'crawl'
 ELASTICSEARCH_UNIQ_KEY = 'url'
 ELASTICSEARCH_LOG_LEVEL = logging.INFO
 
@@ -48,7 +51,7 @@ REDIRECT_ENABLED = False
 AJAXCRAWL_ENABLED = True
 
 # Crawling depth
-DEPTH_LIMIT = 1
+DEPTH_LIMIT = 3
 
 ROBOTSTXT_OBEY = True
 
@@ -64,8 +67,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Pipelines
 ITEM_PIPELINES = {
-    #'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
-    'ahmia.pipelines.CustomElasticSearchPipeline': 200,
+    'ahmia.pipelines.CustomElasticSearchPipeline': 100,
+    'ahmia.pipelines.HistoricalElasticSearchPipeline':200,
 }
 
 BANNED_DOMAINS = []
