@@ -16,6 +16,7 @@ class OnionSpider(WebSpider):
     default_start_url = \
         ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
          'http://tt3j2x4k5ycaa5zt.onion/',
+         'http://msydqstlz2kzerdg.onion/address/',
          'https://blockchainbdgpzk.onion/',
          'http://7cbqhjnlkivmigxf.onion/']
 
