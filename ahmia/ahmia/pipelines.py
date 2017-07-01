@@ -15,6 +15,7 @@ from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 from .items import DocumentItem, LinkItem, AuthorityItem
 from simhash import Simhash
 import requests
+import re
 
 def simhash(s):
         width = 3
@@ -46,11 +47,12 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
                                                   index_suffix_format)
 
         if isinstance(item, DocumentItem):
+            s_val = str(simhash(item['content']).value)
             content_index_action = {
                 '_index': index_name,
                 '_type': self.settings['ELASTICSEARCH_CONTENT_TYPE'],
-                '_id': simhash(item['content']),
-                'title': item['title'],
+                '_id': s_val,
+                'title': item['raw_title'],
                 'content': item['content']
             }
             self.items_buffer.append(content_index_action)
@@ -58,9 +60,9 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
                 '_index': index_name,
                 '_type': self.settings['ELASTICSEARCH_CRAWL_TYPE'],
                 'crawl_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-                'content_id': simhash(item['content'])
-             }
-             self.items_buffer.append(crawl_index_action)              
+                'content_simhash': s_val
+            }
+            self.items_buffer.append(crawl_index_action)
 
         else:
             return
@@ -70,7 +72,6 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
           self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
             self.send_items()
             self.items_buffer = []
-
 
 #import json #### For research
 #from scrapy.conf import settings #### For research

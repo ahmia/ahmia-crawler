@@ -213,6 +213,9 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('content', text)
         doc_loader.add_value('raw_text', text)
 
+        if not title:
+            title = "."
+
         doc_loader.add_value('raw_title', title)
         doc_loader.add_value('raw_url', response.url)
 
