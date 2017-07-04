@@ -185,8 +185,27 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
 
+        hxs = HtmlXPathSelector(response) # For HTML extractions
+
+        # Extract links
+        # For each link on this page
+        links = []
+        a_links = hxs.xpath('//a')
+        for link in a_links:
+            link_obj = {}
+            # Extract the link's URL
+            link_str = " ".join(link.xpath('@href').extract())
+            link_obj['link'] = link_str.replace("\n", "")
+            # Extract the links value
+            link_name_str = " ".join(link.xpath('text()').extract())
+            link_name_str = link_name_str.replace("\n", "")
+            link_name_str = link_name_str.lstrip()
+            link_name_str = link_name_str.rstrip()
+            link_obj['link_name'] = link_name_str
+            links.append(link_obj)
+        doc_loader.add_value('links', links)
+
         # Populate text field
-        hxs = HtmlXPathSelector(response)
         title_list = hxs.xpath('//title/text()').extract()
         title = ' '.join(title_list)
         body_text = self.html2string(response)
