@@ -15,6 +15,7 @@ from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 from .items import DocumentItem, LinkItem, AuthorityItem
 from simhash import Simhash
 import re
+import requests
 
 def simhash(s):
         width = 3
@@ -104,27 +105,34 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                 '_source': dict(item)
             }
         elif isinstance(item, LinkItem):
-            index_action = {
-                "_op_type": "update",
-                "_index": index_name,
-                "_type": self.settings['ELASTICSEARCH_TYPE'],
-                "_id": hashlib.sha1(item['target']).hexdigest(),
-                "script": {
-                    "inline": """ctx._source.anchors = ctx._source.anchors ?
-                              (ctx._source.anchors + [anchor]).unique{it}
-                              : [anchor]""",
-                    "params" : {
-                        "anchor" : item["anchor"]
+            search_url = "%s/%s/%s/"  % ( self.settings['ELASTICSEARCH_SERVERS'], self.settings['ELASTICSEARCH_TYPE'], self.settings['ELASTICSEARCH_INDEX'] )
+            item_id = hashlib.sha1(item['target']).hexdigest()
+            search_url = "http://localhost:9200/crawl/tor/" + item_id
+            r = requests.get(search_url)
+            if r.status_code == 200:
+                responsejson = r.json()
+                anchors = responsejson.get("_source",{}).get("anchors", [])
+                anchors.append(item["anchor"])
+                anchors = list(set(anchors))
+                index_action = {
+                    "_op_type": "update",
+                    "_index": index_name,
+                    "_type": self.settings['ELASTICSEARCH_TYPE'],
+                    "_id": item_id,
+                    "doc": {
+                        "anchors": anchors,
+                        "url": item['target'],
+                        "domain": urlparse(item['target']).hostname,
+                        "updated_on": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                     }
-                },
-                "upsert": {
-                    "anchors": [item["anchor"]],
-                    "url": item['target'],
-                    "domain": urlparse(item['target']).hostname,
-                    "updated_on": datetime.now().strftime(
-                        "%Y-%m-%dT%H:%M:%S")
                 }
-            }
+            else:
+                index_action = {
+                    '_index': index_name,
+                    '_type': self.settings['ELASTICSEARCH_TYPE'],
+                    '_id': item_id,
+                    '_source': dict(item)
+                }
         elif isinstance(item, AuthorityItem):
             index_action = {
                 "_op_type": "update",
