@@ -18,6 +18,7 @@ class OnionSpider(WebSpider):
     ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
      'http://tt3j2x4k5ycaa5zt.onion/',
      'http://msydqstlz2kzerdg.onion/address/',
+     'http://msydqstlz2kzerdg.onion/add/onionsadded/',
      'https://blockchainbdgpzk.onion/',
      'http://7cbqhjnlkivmigxf.onion/']
 
