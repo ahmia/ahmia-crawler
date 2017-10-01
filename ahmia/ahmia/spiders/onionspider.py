@@ -20,7 +20,8 @@ class OnionSpider(WebSpider):
      'http://msydqstlz2kzerdg.onion/address/',
      'http://msydqstlz2kzerdg.onion/add/onionsadded/',
      'https://blockchainbdgpzk.onion/',
-     'http://7cbqhjnlkivmigxf.onion/']
+     'http://7cbqhjnlkivmigxf.onion/',
+     'http://zlal32teyptf4tvi.onion/']
 
     def get_link_extractor(self):
         return LinkExtractor(allow=r'^http://[a-z2-7]{16}.onion',
