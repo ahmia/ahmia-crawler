@@ -18,6 +18,7 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
+ELASTICSEARCH_SERVER = 'http://localhost:9200'
 ELASTICSEARCH_SERVERS = ['http://localhost:9200']
 ELASTICSEARCH_RESEARCH_INDEX = 'research'
 # Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12

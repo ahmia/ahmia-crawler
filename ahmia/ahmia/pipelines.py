@@ -108,9 +108,9 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                 '_source': dict(item)
             }
         elif isinstance(item, LinkItem):
-            search_url = "%s/%s/%s/"  % ( self.settings['ELASTICSEARCH_SERVERS'], self.settings['ELASTICSEARCH_TYPE'], self.settings['ELASTICSEARCH_INDEX'] )
+            search_url = "%s/%s/%s/"  % ( self.settings['ELASTICSEARCH_SERVER'], self.settings['ELASTICSEARCH_INDEX'], self.settings['ELASTICSEARCH_TYPE'] )
             item_id = hashlib.sha1(item['target']).hexdigest()
-            search_url = "http://localhost:9200/crawl/tor/" + item_id
+            search_url = search_url + item_id
             r = requests.get(search_url)
             if r.status_code == 200:
                 responsejson = r.json()
