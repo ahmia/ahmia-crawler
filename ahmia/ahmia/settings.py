@@ -11,6 +11,7 @@
 
 import logging
 import requests  # To fetch the list of banned domains
+import datetime # Index name according to YEAR-MONTH
 
 BOT_NAME = 'ahmia'
 
@@ -18,8 +19,9 @@ SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
 ELASTICSEARCH_SERVERS = ['http://localhost:9200']
-ELASTICSEARCH_INDEX = 'crawl'
 ELASTICSEARCH_RESEARCH_INDEX = 'research'
+# Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
+ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
 ELASTICSEARCH_TYPE = 'tor'
 ELASTICSEARCH_CONTENT_TYPE = 'content'
 ELASTICSEARCH_CRAWL_TYPE = 'crawl'
