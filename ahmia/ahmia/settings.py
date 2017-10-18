@@ -18,7 +18,7 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
-ELASTICSEARCH_SERVERS = ['http://localhost:9200']
+ELASTICSEARCH_SERVER = 'http://localhost:9200'
 # Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
 ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
 ELASTICSEARCH_TYPE = 'tor'
