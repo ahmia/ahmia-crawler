@@ -18,8 +18,9 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
-ELASTICSEARCH_SERVERS = ['http://localhost:9200'] # For scrapy-elasticsearch
-ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0] # For special update
+ELASTICSEARCH_SERVER = 'http://localhost:9200'
+ELASTICSEARCH_SERVERS = ['http://localhost:9200']
+ELASTICSEARCH_RESEARCH_INDEX = 'research'
 
 # Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
 ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
