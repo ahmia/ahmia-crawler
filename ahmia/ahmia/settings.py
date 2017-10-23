@@ -67,8 +67,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Pipelines
 ITEM_PIPELINES = {
-    'ahmia.pipelines.CustomElasticSearchPipeline': 100#,
-#    'ahmia.pipelines.HistoricalElasticSearchPipeline':200,
+    'ahmia.pipelines.CustomElasticSearchPipeline': 100,
+    'ahmia.pipelines.HistoricalElasticSearchPipeline':200,
 }
 
 BANNED_DOMAINS = []
