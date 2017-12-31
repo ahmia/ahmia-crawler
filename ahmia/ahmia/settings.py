@@ -81,6 +81,9 @@ for onion in response.text.split("\n"):
     if len(onion) is 16:
         FAKE_DOMAINS.append('%s.onion' % onion)
 
+#Seed file
+SEED_FILE = "crawl.seeds"
+
 # HTTP proxy settings
 # port 8123 is for polipo (Tor)
 # port 8118 is for privoxy (Tor)

@@ -62,7 +62,6 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
                 'crawl_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
                 'content_simhash': s_val,
                 'domain' : item['domain'],
-       #         'raw_text' : item['raw_text'],
                 'raw_title' : item['raw_title']
             }
             self.items_buffer.append(crawl_index_action)              
