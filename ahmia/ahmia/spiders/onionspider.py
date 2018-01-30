@@ -27,7 +27,7 @@ class OnionSpider(WebSpider):
         default_start_url.append( url + str(index) )
 
     def get_link_extractor(self):
-        return LinkExtractor(allow=r'^http://[a-z2-7]{16}.onion',
+        return LinkExtractor(allow=[r'^http://[a-z2-7]{16}.onion', r'^http://[a-z2-7]{56}.onion'],
                              deny=[r'^https://blockchainbdgpzk.onion/address/',
                                    r'^https://blockchainbdgpzk.onion/tx/'],
                              deny_domains=settings.get('FAKE_DOMAINS'))
