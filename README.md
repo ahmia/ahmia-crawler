@@ -34,7 +34,7 @@ $ dnf install tor polipo
 ```sh
 $ virtualenv /path/to/venv
 $ source /path/to/venv/bin/activate
-(venv)$ pip install -r requirements.txt
+(venv)$ pip3 install -r requirements.txt
 ```
 
 ## Proxy configuration
@@ -48,14 +48,20 @@ $ systemctl start polipo
 
 ## Or use with own python HTTP proxy.
 ```sh
-$ sudo pip3 install PySocks
-$ sudo pip3 install urlparse2
+$ pip3 install socksipy-branch
 $ python http_tor_proxy.py
 $ curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
 ```
 
 # Usage
-Please refer to the crawler guide.
+
+In order to execute the crawler to run permanently:
+```
+$ chmod +x run.sh
+$ ./run.sh &> crawler.log
+```
+
+For specific run examples, please refer to the crawler guide.
 - [ahmia](https://github.com/ahmia/ahmia-crawler/tree/master/ahmia)
 
 # How to use multiple Tor clients ?

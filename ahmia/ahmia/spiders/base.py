@@ -7,7 +7,7 @@ It's a virtual class and shouldn't be used to crawl anything.
 import datetime
 import hashlib
 import os
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 import igraph as ig
 
@@ -15,6 +15,7 @@ from elasticsearch.helpers import scan
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
 from scrapy import signals
+# todo substitude scrapy.conf with crawler.settings
 from scrapy.conf import settings
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
@@ -23,6 +24,7 @@ from scrapy.spiders import CrawlSpider, Rule
 
 # For text field
 import html2text
+# todo scrapy.selector.HtmlXPathSelector is deprecated, instantiate scrapy.Selector instead
 from scrapy.selector import HtmlXPathSelector
 
 from ahmia.items import DocumentItem, LinkItem, AuthorityItem
@@ -120,8 +122,6 @@ class WebSpider(CrawlSpider):
             id_ = hit['_id']
             url = hit['_source']['url']
             content = hit['_source']['content']
-            if isinstance(content, str):
-                content = unicode(content, "utf-8")
             try:
                 response = HtmlResponse(url, encoding="utf-8", body=content)
                 for request in self._requests_to_follow(response):

@@ -11,7 +11,7 @@ import re
 import random
 import hashlib
 import logging
-from urlparse import urlparse
+from urllib.parse import urlparse
 from scrapy.exceptions import IgnoreRequest
 
 from scrapy.conf import settings
@@ -43,7 +43,7 @@ class FilterBannedDomains(object):
         domain = domain.replace("http://", "").replace("https://", "") \
                                               .replace("/", "")
         banned_domains = settings.get('BANNED_DOMAINS')
-        if hashlib.md5(domain).hexdigest() in banned_domains:
+        if hashlib.md5(domain.encode('utf-8')).hexdigest() in banned_domains:
             # Do not execute this request
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, This domain is banned." \
@@ -73,6 +73,8 @@ class FilterResponses(object):
     def is_valid_response(type_whitelist, content_type_header):
         """Is the response valid?"""
         for type_regex in type_whitelist:
+            if isinstance(content_type_header, bytes):
+                content_type_header = content_type_header.decode('utf-8')
             if re.search(type_regex, content_type_header):
                 return True
         return False

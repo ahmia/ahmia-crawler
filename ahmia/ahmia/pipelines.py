@@ -8,7 +8,7 @@ graph and compute the pagerank algorithm on it.
 """
 from datetime import datetime
 import hashlib
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
@@ -93,12 +93,12 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
             index_action = {
                 '_index': index_name,
                 '_type': self.settings['ELASTICSEARCH_TYPE'],
-                '_id': hashlib.sha1(item['url']).hexdigest(),
+                '_id': hashlib.sha1(item['url'].encode('utf-8')).hexdigest(),
                 '_source': dict(item)
             }
         elif isinstance(item, LinkItem):
             search_url = "%s/%s/%s/"  % ( self.settings['ELASTICSEARCH_SERVER'], self.settings['ELASTICSEARCH_INDEX'], self.settings['ELASTICSEARCH_TYPE'] )
-            item_id = hashlib.sha1(item['target']).hexdigest()
+            item_id = hashlib.sha1(item['target'].encode('utf-8')).hexdigest()
             search_url = search_url + item_id
             r = requests.get(search_url)
             if r.status_code == 200:

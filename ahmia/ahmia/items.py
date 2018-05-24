@@ -10,7 +10,7 @@ import unicodedata
 from scrapy.item import Field, Item
 from scrapy.loader.processors import MapCompose, TakeFirst
 
-all_chars = (unichr(i) for i in xrange(0x110000))
+all_chars = (chr(i) for i in range(0x110000))
 control_chars = ''.join(c for c in all_chars if unicodedata.category(c) == 'Cc')
 control_char_re = re.compile('[%s]' % re.escape(control_chars))
 
