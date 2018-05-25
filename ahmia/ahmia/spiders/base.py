@@ -12,11 +12,10 @@ from urllib.parse import urlparse
 import igraph as ig
 
 from elasticsearch.helpers import scan
+from scrapy.utils.project import get_project_settings
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
 from scrapy import signals
-# todo substitude scrapy.conf with crawler.settings
-from scrapy.conf import settings
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
 from scrapy.loader import ItemLoader
@@ -24,10 +23,10 @@ from scrapy.spiders import CrawlSpider, Rule
 
 # For text field
 import html2text
-# todo scrapy.selector.HtmlXPathSelector is deprecated, instantiate scrapy.Selector instead
-from scrapy.selector import HtmlXPathSelector
+from scrapy.selector import Selector
 
 from ahmia.items import DocumentItem, LinkItem, AuthorityItem
+
 
 class WebSpider(CrawlSpider):
     """
@@ -41,7 +40,7 @@ class WebSpider(CrawlSpider):
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super(WebSpider, cls).from_crawler(crawler, *args, **kwargs)
-        if settings.get('FULL_PAGERANK_COMPUTE', False):
+        if crawler.settings.get('FULL_PAGERANK_COMPUTE', False):
             crawler.signals.connect(spider.on_idle, signals.spider_idle)
         return spider
 
@@ -51,6 +50,9 @@ class WebSpider(CrawlSpider):
                            process_links=self.limit_links,
                            follow=True)]
         super(WebSpider, self).__init__(*args, **kwargs)
+        # TODO check if the following is consistent with cmdline settings
+        settings = get_project_settings()
+
         target_sites = settings.get('TARGET_SITES')
         if target_sites and os.path.isfile(target_sites):
             # Read a list of URLs from file
@@ -185,7 +187,7 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
 
-        hxs = HtmlXPathSelector(response) # For HTML extractions
+        hxs = Selector(response) # For HTML extractions
 
         # Extract links
         # For each link on this page
