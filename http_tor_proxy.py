@@ -30,9 +30,11 @@ import urllib.request
 
 PORT = 14444
 
+
 class Proxy(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        print( "GET " + self.path )
+        print("GET", self.path)
+
         # Catch HTTP errors
         try:
             response = urllib.request.urlopen(self.path)
@@ -42,8 +44,10 @@ class Proxy(http.server.SimpleHTTPRequestHandler):
             if response.code == 500:
                 response.code = 200
         self.copyfile(response, self.wfile)
+
     def do_POST(self):
-        print( "POST " + self.path )
+        print("POST", self.path)
+
         length = int(self.headers.getheaders("Content-Length")[0])
         post_data = urllib.parse.parse_qs(self.rfile.read(length))
         # Catch HTTP errors
@@ -56,6 +60,7 @@ class Proxy(http.server.SimpleHTTPRequestHandler):
             if response.code == 500:
                 response.code = 200
         self.copyfile(response, self.wfile)
+
 
 httpd = socketserver.ForkingTCPServer(('', PORT), Proxy)
 print("Serving at port %d" % PORT)

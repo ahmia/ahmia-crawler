@@ -7,12 +7,13 @@ from scrapy.linkextractors import LinkExtractor
 
 from .base import WebSpider
 
+
 class InvisibleInternetSpider(WebSpider):
     """
     Crawls the i2p network.
     """
     name = "ahmia-i2p"
-    default_start_url = ['http://nekhbet.com/i2p_links.shtml',]
+    default_start_url = ['http://nekhbet.com/i2p_links.shtml', ]
 
     def get_link_extractor(self):
         return LinkExtractor(allow=r'.i2p',)

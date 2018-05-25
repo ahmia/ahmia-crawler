@@ -7,19 +7,19 @@
 
 # Direct every request to .onion sites to privoxy that uses Tor
 
-import re
-import random
 import hashlib
 import logging
+import random
+import re
 from urllib.parse import urlparse
-from scrapy.exceptions import IgnoreRequest
 
 from scrapy.conf import settings
+from scrapy.exceptions import IgnoreRequest
 
 
 class ProxyMiddleware(object):
     """Middleware for .onion/.i2p addresses."""
-    def process_request(self, request, spider): # pylint:disable=unused-argument
+    def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
@@ -32,11 +32,12 @@ class ProxyMiddleware(object):
             else:
                 request.meta['proxy'] = settings.get('HTTP_PROXY_I2P')
 
+
 class FilterBannedDomains(object):
     """
     Middleware to filter requests to banned domains.
     """
-    def process_request(self, request, spider): # pylint:disable=unused-argument
+    def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
@@ -51,11 +52,12 @@ class FilterBannedDomains(object):
             logging.info(msg)
             raise IgnoreRequest()
 
+
 class SubDomainLimit(object):
     """
     Ignore weird sub domain loops (for instance, rss..rss.rss.something.onion)
     """
-    def process_request(self, request, spider): # pylint:disable=unused-argument
+    def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         hostname = urlparse(request.url).hostname
         if len(hostname.split(".")) > 4:
@@ -65,6 +67,7 @@ class SubDomainLimit(object):
                   .format(request.url)
             logging.info(msg)
             raise IgnoreRequest()
+
 
 class FilterResponses(object):
     """Limit the HTTP response types that Scrapy downloads."""
@@ -79,7 +82,7 @@ class FilterResponses(object):
                 return True
         return False
 
-    def process_response(self, request, response, spider): # pylint:disable=unused-argument
+    def process_response(self, request, response, spider):  # todo pylint:disable=unused-argument
         """
         Only allow HTTP response types that that match the given list of
         filtering regexs

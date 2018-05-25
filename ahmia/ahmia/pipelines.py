@@ -6,20 +6,19 @@ document.
 AuthorityPipeline stores links until the spider is closed. Then it creates a
 graph and compute the pagerank algorithm on it.
 """
-from datetime import datetime
 import hashlib
+from datetime import datetime
 from urllib.parse import urlparse
 
+import requests
 from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
 from .items import DocumentItem, LinkItem, AuthorityItem
 
-import requests
+# import json #### For research
+# from scrapy.conf import settings #### For research
 
-#import json #### For research
-#from scrapy.conf import settings #### For research
-
-#### For research
+# *** For research ***
 
 """
 class ResearchElasticSearchPipeline(object):
@@ -65,6 +64,7 @@ class ResearchElasticSearchPipeline(object):
         return item # Does not change this item!
 """
 
+
 class CustomElasticSearchPipeline(ElasticSearchPipeline):
     """
     CustomElasticSearchPipeline is responsible to index items to ES.
@@ -97,13 +97,15 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                 '_source': dict(item)
             }
         elif isinstance(item, LinkItem):
-            search_url = "%s/%s/%s/"  % ( self.settings['ELASTICSEARCH_SERVER'], self.settings['ELASTICSEARCH_INDEX'], self.settings['ELASTICSEARCH_TYPE'] )
+            search_url = "%s/%s/%s/" % (self.settings['ELASTICSEARCH_SERVER'],
+                                        self.settings['ELASTICSEARCH_INDEX'],
+                                        self.settings['ELASTICSEARCH_TYPE'])
             item_id = hashlib.sha1(item['target'].encode('utf-8')).hexdigest()
             search_url = search_url + item_id
             r = requests.get(search_url)
             if r.status_code == 200:
                 responsejson = r.json()
-                anchors = responsejson.get("_source",{}).get("anchors", [])
+                anchors = responsejson.get("source", {}).get("anchors", [])
                 anchors.append(item["anchor"])
                 anchors = list(set(anchors))
                 index_action = {
@@ -141,6 +143,6 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
         self.items_buffer.append(index_action)
 
         if len(self.items_buffer) >= \
-          self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
+                self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
             self.send_items()
             self.items_buffer = []

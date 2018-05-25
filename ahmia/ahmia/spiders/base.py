@@ -78,17 +78,17 @@ class WebSpider(CrawlSpider):
 
     def build_links(self):
         """ Build a complete list of links from html in elasticsearch """
-        def binarySearch(array, key, low, high):
+        def binary_search(array, key, low, high):
             """ Fast search in a sorted array """
-            if low > high: # termination case
+            if low > high:  # termination case
                 return -1
-            middle = (low + high) / 2 # gets the middle of the array
-            if array[middle] == key:  # if the middle is our key
+            middle = (low + high) / 2  # gets the middle of the array
+            if array[middle] == key:   # if the middle is our key
                 return middle
-            elif key < array[middle]: # our key might be in the left sub-array
-                return binarySearch(array, key, low, middle-1)
-            else:                     # our key might be in the right sub-array
-                return binarySearch(array, key, middle+1, high)
+            elif key < array[middle]:  # our key might be in the left sub-array
+                return binary_search(array, key, low, middle-1)
+            else:                      # our key might be in the right sub-array
+                return binary_search(array, key, middle+1, high)
 
         es_obj = ElasticSearchPipeline.from_crawler(self.crawler).es
         new_links = []
@@ -128,7 +128,7 @@ class WebSpider(CrawlSpider):
                 response = HtmlResponse(url, encoding="utf-8", body=content)
                 for request in self._requests_to_follow(response):
                     hash_target = hashlib.sha1(request.url).hexdigest()
-                    if binarySearch(hashes, hash_target, 0, len(hashes)-1) < 0:
+                    if binary_search(hashes, hash_target, 0, len(hashes)-1) < 0:
                         continue
                     new_links.append((id_,
                                       hash_target))
@@ -187,7 +187,7 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
 
-        hxs = Selector(response) # For HTML extractions
+        hxs = Selector(response)  # For HTML extractions
 
         # Extract links
         # For each link on this page

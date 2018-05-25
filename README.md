@@ -57,7 +57,7 @@ $ curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
 
 In order to execute the crawler to run permanently:
 ```
-$ chmod +x run.sh
+$ source /path/to/venv/bin/activate
 $ ./run.sh &> crawler.log
 ```
 

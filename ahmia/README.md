@@ -18,3 +18,7 @@ $ scrapy crawl ahmia-tor -o items.json -t json
 or
 $ scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=targetitemtype
 ```
+
+### Run forever
+
+$ ../run.sh
