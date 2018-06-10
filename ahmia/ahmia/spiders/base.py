@@ -9,23 +9,20 @@ import hashlib
 import os
 from urllib.parse import urlparse
 
+# For text field
+import html2text
 import igraph as ig
-
 from elasticsearch.helpers import scan
-from scrapy.utils.project import get_project_settings
-from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
-
 from scrapy import signals
+from scrapy.conf import settings   # TODO does it follow/include cmdline options?
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
 from scrapy.loader import ItemLoader
-from scrapy.spiders import CrawlSpider, Rule
-
-# For text field
-import html2text
 from scrapy.selector import Selector
+from scrapy.spiders import CrawlSpider, Rule
+from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
-from ahmia.items import DocumentItem, LinkItem, AuthorityItem
+from ..items import DocumentItem, LinkItem, AuthorityItem
 
 
 class WebSpider(CrawlSpider):
@@ -33,8 +30,10 @@ class WebSpider(CrawlSpider):
     The base to crawl webpages in a specific network (tor, i2p).
     It uses github.com/ahmia/ahmia-index mappings.
     """
-    name = None
 
+    # Class attributes are going to be overwritten in subclasses
+    name = None
+    es_index = None
     default_start_url = None
 
     @classmethod
@@ -50,8 +49,6 @@ class WebSpider(CrawlSpider):
                            process_links=self.limit_links,
                            follow=True)]
         super(WebSpider, self).__init__(*args, **kwargs)
-        # TODO check if the following is consistent with cmdline settings
-        settings = get_project_settings()
 
         target_sites = settings.get('TARGET_SITES')
         if target_sites and os.path.isfile(target_sites):
@@ -102,7 +99,7 @@ class WebSpider(CrawlSpider):
                         }
                     }
                 },
-                index=self.settings['ELASTICSEARCH_INDEX'],
+                index=self.es_index,
                 doc_type=self.settings['ELASTICSEARCH_TYPE'],
                 _source_exclude=["*"])
         ])
@@ -115,7 +112,7 @@ class WebSpider(CrawlSpider):
                     }
                 }
             },
-            index=self.settings['ELASTICSEARCH_INDEX'],
+            index=self.es_index,
             doc_type=self.settings['ELASTICSEARCH_TYPE'],
             _source_include=["content", "url"]
         )

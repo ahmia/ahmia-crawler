@@ -21,4 +21,5 @@ while true; do
     sleep $sleeptime
 done
 
-# todo add SIGKILL handler/trap for the child (scrapy) process?
+# todo add command to run ahmia-i2p spider in parallel
+# todo add SIGKILL handler/trap for the child (scrapy) processes?

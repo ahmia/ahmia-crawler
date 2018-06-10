@@ -20,9 +20,9 @@ NEWSPIDER_MODULE = 'ahmia.spiders'
 
 ELASTICSEARCH_SERVERS = ['http://localhost:9200']  # For scrapy-elasticsearch
 ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0]  # For special update
-# Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
-ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
-ELASTICSEARCH_TYPE = 'tor'
+ELASTICSEARCH_TOR_INDEX = datetime.datetime.now().strftime("tor-%Y-%m")
+ELASTICSEARCH_I2P_INDEX = datetime.datetime.now().strftime("i2p-%Y-%m")
+ELASTICSEARCH_TYPE = 'doc'
 ELASTICSEARCH_UNIQ_KEY = 'url'
 ELASTICSEARCH_LOG_LEVEL = logging.INFO
 
@@ -63,10 +63,11 @@ DOWNLOADER_MIDDLEWARES = {
 # RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
 
 # Pipelines
-ITEM_PIPELINES = {
-    # 'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
-    'ahmia.pipelines.CustomElasticSearchPipeline': 200,
-}
+# Deprecated: Now defined inside each spider
+# ITEM_PIPELINES = {
+#     # 'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
+#     'ahmia.pipelines.CustomElasticSearchPipeline': 200,
+# }
 
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/')
