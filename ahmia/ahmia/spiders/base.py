@@ -14,7 +14,7 @@ import html2text
 import igraph as ig
 from elasticsearch.helpers import scan
 from scrapy import signals
-from scrapy.conf import settings   # TODO does it follow/include cmdline options?
+from scrapy.conf import settings
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
 from scrapy.loader import ItemLoader
