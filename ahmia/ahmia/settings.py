@@ -18,11 +18,11 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
-ELASTICSEARCH_SERVERS = ['http://localhost:9200'] # For scrapy-elasticsearch
-ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0] # For special update
-# Automatic index name selection according to YEAR-MONTH, i.e. crawl-2017-12
-ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("crawl-%Y-%m")
-ELASTICSEARCH_TYPE = 'tor'
+ELASTICSEARCH_SERVERS = ['http://localhost:9200']  # For scrapy-elasticsearch
+ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0]  # For special update
+ELASTICSEARCH_TOR_INDEX = datetime.datetime.now().strftime("tor-%Y-%m")
+ELASTICSEARCH_I2P_INDEX = datetime.datetime.now().strftime("i2p-%Y-%m")
+ELASTICSEARCH_TYPE = 'doc'
 ELASTICSEARCH_UNIQ_KEY = 'url'
 ELASTICSEARCH_LOG_LEVEL = logging.INFO
 
@@ -34,7 +34,7 @@ TARGET_SITES = ""
 # Identify as normal Tor Browser
 USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0"
 
-DOWNLOAD_TIMEOUT = 60 # 60s
+DOWNLOAD_TIMEOUT = 80  # seconds
 DOWNLOAD_DELAY = 1
 
 # Search engine point of view
@@ -42,7 +42,7 @@ CONCURRENT_REQUESTS = 100
 LOG_LEVEL = 'INFO'
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
-DOWNLOAD_MAXSIZE = 1000000 #Max-limit in bytes
+DOWNLOAD_MAXSIZE = 1000000  # Max-limit in bytes
 REACTOR_THREADPOOL_MAXSIZE = 20
 REDIRECT_ENABLED = False
 AJAXCRAWL_ENABLED = True
@@ -60,13 +60,14 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
-#RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
+# RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
 
 # Pipelines
-ITEM_PIPELINES = {
-    #'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
-    'ahmia.pipelines.CustomElasticSearchPipeline': 200,
-}
+# Deprecated: Now defined inside each spider
+# ITEM_PIPELINES = {
+#     # 'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
+#     'ahmia.pipelines.CustomElasticSearchPipeline': 200,
+# }
 
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/')
@@ -86,6 +87,6 @@ for onion in response.text.split("\n"):
 # port 4444 and 4445 is for i2p HTTP/HTTPS proxy
 # port 3128 is HAProxy load balancer
 # port 14444 pure HTTP socks tor proxy
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:8123/"] # Tor HTTP proxy
-HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
-HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost
+HTTP_PROXY_TOR_PROXIES = ["http://localhost:8123/"]  # Tor HTTP proxy
+HTTP_PROXY_I2P = "http://localhost:4444/"            # HTTP i2p proxy in localhost
+HTTPS_PROXY_I2P = "http://localhost:4445/"           # HTTPS i2p proxy in localhost
