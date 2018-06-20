@@ -23,6 +23,13 @@ ELASTICSEARCH_SERVER = ELASTICSEARCH_SERVERS[0]  # For special update
 ELASTICSEARCH_TOR_INDEX = datetime.datetime.now().strftime("tor-%Y-%m")
 ELASTICSEARCH_I2P_INDEX = datetime.datetime.now().strftime("i2p-%Y-%m")
 ELASTICSEARCH_TYPE = 'doc'
+
+# For the optional research pipeline
+ELASTICSEARCH_RESEARCH_INDEX = 'research'
+ELASTICSEARCH_CONTENT_TYPE = 'content'
+ELASTICSEARCH_CRAWL_TYPE = 'crawl'
+RESEARCH_GATHERING = False
+
 ELASTICSEARCH_UNIQ_KEY = 'url'
 ELASTICSEARCH_LOG_LEVEL = logging.INFO
 
@@ -59,15 +66,6 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.FilterResponses': 400,
     'ahmia.middleware.SubDomainLimit': 500,
 }
-
-# RESEARCH_INDEX = "http://localhost:9200/research/" #### For research
-
-# Pipelines
-# Deprecated: Now defined inside each spider
-# ITEM_PIPELINES = {
-#     # 'ahmia.pipelines.ResearchElasticSearchPipeline': 100, #### For research
-#     'ahmia.pipelines.CustomElasticSearchPipeline': 200,
-# }
 
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/')

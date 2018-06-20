@@ -24,6 +24,8 @@ class OnionSpider(WebSpider):
         # Automatic index name selection according to YEAR-MONTH, i.e. tor-2017-12
         'ELASTICSEARCH_INDEX': datetime.datetime.now().strftime("tor-%Y-%m")
     }
+    if settings['RESEARCH_GATHER']:
+        custom_settings['ITEM_PIPELINES']['ahmia.pipelines.HistoricalElasticSearchPipeline'] = 300
     default_start_url = \
         ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
          'http://tt3j2x4k5ycaa5zt.onion/',
