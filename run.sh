@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source venv/bin/activate
 cd ahmia
 
 # One day in seconds
@@ -21,3 +20,6 @@ while true; do
     echo ""
     sleep $sleeptime
 done
+
+# todo add command to run ahmia-i2p spider in parallel
+# todo add SIGKILL handler/trap for the child (scrapy) processes?

@@ -7,39 +7,39 @@ It's a virtual class and shouldn't be used to crawl anything.
 import datetime
 import hashlib
 import os
-from urlparse import urlparse
+from urllib.parse import urlparse
 
+# For text field
+import html2text
 import igraph as ig
-
 from elasticsearch.helpers import scan
-from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
-
 from scrapy import signals
 from scrapy.conf import settings
 from scrapy.http import Request
 from scrapy.http.response.html import HtmlResponse
 from scrapy.loader import ItemLoader
+from scrapy.selector import Selector
 from scrapy.spiders import CrawlSpider, Rule
+from scrapyelasticsearch.scrapyelasticsearch import ElasticSearchPipeline
 
-# For text field
-import html2text
-from scrapy.selector import HtmlXPathSelector
+from ..items import DocumentItem, LinkItem, AuthorityItem
 
-from ahmia.items import DocumentItem, LinkItem, AuthorityItem
 
 class WebSpider(CrawlSpider):
     """
     The base to crawl webpages in a specific network (tor, i2p).
     It uses github.com/ahmia/ahmia-index mappings.
     """
-    name = None
 
+    # Class attributes are going to be overwritten in subclasses
+    name = None
+    es_index = None
     default_start_url = None
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super(WebSpider, cls).from_crawler(crawler, *args, **kwargs)
-        if settings.get('FULL_PAGERANK_COMPUTE', False):
+        if crawler.settings.get('FULL_PAGERANK_COMPUTE', False):
             crawler.signals.connect(spider.on_idle, signals.spider_idle)
         return spider
 
@@ -49,6 +49,7 @@ class WebSpider(CrawlSpider):
                            process_links=self.limit_links,
                            follow=True)]
         super(WebSpider, self).__init__(*args, **kwargs)
+
         target_sites = settings.get('TARGET_SITES')
         if target_sites and os.path.isfile(target_sites):
             # Read a list of URLs from file
@@ -74,17 +75,17 @@ class WebSpider(CrawlSpider):
 
     def build_links(self):
         """ Build a complete list of links from html in elasticsearch """
-        def binarySearch(array, key, low, high):
+        def binary_search(array, key, low, high):
             """ Fast search in a sorted array """
-            if low > high: # termination case
+            if low > high:  # termination case
                 return -1
-            middle = (low + high) / 2 # gets the middle of the array
-            if array[middle] == key:  # if the middle is our key
+            middle = (low + high) / 2  # gets the middle of the array
+            if array[middle] == key:   # if the middle is our key
                 return middle
-            elif key < array[middle]: # our key might be in the left sub-array
-                return binarySearch(array, key, low, middle-1)
-            else:                     # our key might be in the right sub-array
-                return binarySearch(array, key, middle+1, high)
+            elif key < array[middle]:  # our key might be in the left sub-array
+                return binary_search(array, key, low, middle-1)
+            else:                      # our key might be in the right sub-array
+                return binary_search(array, key, middle+1, high)
 
         es_obj = ElasticSearchPipeline.from_crawler(self.crawler).es
         new_links = []
@@ -98,7 +99,7 @@ class WebSpider(CrawlSpider):
                         }
                     }
                 },
-                index=self.settings['ELASTICSEARCH_INDEX'],
+                index=self.es_index,
                 doc_type=self.settings['ELASTICSEARCH_TYPE'],
                 _source_exclude=["*"])
         ])
@@ -111,7 +112,7 @@ class WebSpider(CrawlSpider):
                     }
                 }
             },
-            index=self.settings['ELASTICSEARCH_INDEX'],
+            index=self.es_index,
             doc_type=self.settings['ELASTICSEARCH_TYPE'],
             _source_include=["content", "url"]
         )
@@ -120,13 +121,12 @@ class WebSpider(CrawlSpider):
             id_ = hit['_id']
             url = hit['_source']['url']
             content = hit['_source']['content']
-            if isinstance(content, str):
-                content = unicode(content, "utf-8")
             try:
-                response = HtmlResponse(url, encoding="utf-8", body=content)
+                #response = HtmlResponse(url, encoding="utf-8", body=content)
+                response = HtmlResponse(url, body=content)
                 for request in self._requests_to_follow(response):
                     hash_target = hashlib.sha1(request.url).hexdigest()
-                    if binarySearch(hashes, hash_target, 0, len(hashes)-1) < 0:
+                    if binary_search(hashes, hash_target, 0, len(hashes)-1) < 0:
                         continue
                     new_links.append((id_,
                                       hash_target))
@@ -185,7 +185,7 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('domain', urlparse(response.url).hostname)
         doc_loader.add_xpath('title', '//title/text()')
 
-        hxs = HtmlXPathSelector(response) # For HTML extractions
+        hxs = Selector(response)  # For HTML extractions
 
         # Extract links
         # For each link on this page
