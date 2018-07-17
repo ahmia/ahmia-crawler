@@ -125,7 +125,7 @@ class WebSpider(CrawlSpider):
                 #response = HtmlResponse(url, encoding="utf-8", body=content)
                 response = HtmlResponse(url, body=content)
                 for request in self._requests_to_follow(response):
-                    hash_target = hashlib.sha1(request.url).hexdigest()
+                    hash_target = hashlib.sha1(request.url.encode('utf-8')).hexdigest()
                     if binary_search(hashes, hash_target, 0, len(hashes)-1) < 0:
                         continue
                     new_links.append((id_,
