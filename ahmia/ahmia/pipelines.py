@@ -8,6 +8,7 @@ graph and compute the pagerank algorithm on it.
 """
 import hashlib
 import logging
+import re
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -24,6 +25,7 @@ logger = logging.getLogger(__name__)
 if settings['RESEARCH_GATHER']:
     from simhash import Simhash
 
+
 # *** Optional: for research ***
 def simhash(s): 
         width = 3
@@ -38,6 +40,7 @@ def simhash(s):
         features =  [sim[i:i + width] for i in range(max(len(sim) - width + 1, 1))]
         shash = Simhash(features)
         return shash
+
 
 # *** Optional: for research ***
 class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
@@ -74,6 +77,7 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
             self.items_buffer.append(crawl_index_action)
         else:
             return
+
 
 class CustomElasticSearchPipeline(ElasticSearchPipeline):
     """

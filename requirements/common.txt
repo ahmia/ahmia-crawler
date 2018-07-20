@@ -43,3 +43,4 @@ urllib3==1.21.1
 w3lib==1.17.0
 wrapt==1.10.8
 zope.interface==4.4.2
+PySocks==1.6.8
