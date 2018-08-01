@@ -11,7 +11,7 @@ backports.functools-lru-cache==1.2.1
 cffi==1.10.0
 configparser==3.5.0
 constantly==15.1.0
-cryptography==2.1.4
+cryptography==2.3
 cssselect==1.0.1
 elasticsearch==5.4.0
 enum34==1.1.6
