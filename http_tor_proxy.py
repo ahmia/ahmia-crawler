@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Opens HTTP proxy to port 14444
 Traffic goes through socks5 on 127.0.0.1:9050 which is Tor
