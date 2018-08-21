@@ -17,7 +17,7 @@ bash testall.sh
 ```
 
 ```sh
-killall tor
+kill $(ps aux | grep 'NewCircuitPeriod' | awk '{print $2}')
 kill $(ps aux | grep 'http_tor_proxy' | awk '{print $2}')
 rm *.log
 ```
