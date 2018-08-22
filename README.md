@@ -17,53 +17,52 @@ in Finland. This repository contains crawlers used by [Ahmia](https://github.com
 
 ### Ubuntu 16.04
 ```sh
-$ apt-get install build-essential python-pip python-virtualenv
-$ apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
-$ apt-get install tor polipo
+apt-get install build-essential python-pip python-virtualenv
+apt-get install libxml2-dev libxslt1-dev python-dev libffi-dev libssl-dev
+apt-get install tor polipo
 ```
 
 ### Fedora 23
 ```sh
-$ dnf install @development-tools redhat-rpm-config python-pip python-virtualenv
-$ dnf install libxml-devel libxslt-devel python-devel libffi-devel openssl-devel
-$ dnf install tor polipo
+dnf install @development-tools redhat-rpm-config python-pip python-virtualenv
+dnf install libxml-devel libxslt-devel python-devel libffi-devel openssl-devel
+dnf install tor polipo
 ```
 
 ## Install requirements in a virtual environment
 
 ```sh
-$ virtualenv /path/to/venv
-$ source /path/to/venv/bin/activate
-(venv)$ pip3 install -r requirements.txt
+virtualenv /path/to/venv
+source /path/to/venv/bin/activate
+(venv)pip3 install -r requirements.txt
 ```
 
-## Proxy configuration
-Please use polipo config sample [here](https://github.com/ahmia/ahmia-crawler/blob/master/conf/polipo/config).
+## Prefer own python HTTP proxy
 
-## Start tor and polipo
-```sh
-$ systemctl start tor
-$ systemctl start polipo
-```
-
-## Or use with own python HTTP proxy.
-```sh
-$ pip3 install socksipy-branch
-$ python http_tor_proxy.py
-$ curl -x http://localhost:14444 http://msydqstlz2kzerdg.onion/
-```
+Look fleet installation
+[here](https://github.com/ahmia/ahmia-crawler/tree/master/torfleet).
 
 # Usage
 
 In order to execute the crawler to run permanently:
 ```
-$ source /path/to/venv/bin/activate
-$ ./run.sh &> crawler.log
+source /path/to/venv/bin/activate
+./run.sh &> crawler.log
 ```
 
-For specific run examples, please refer to the crawler guide.
-- [ahmia](https://github.com/ahmia/ahmia-crawler/tree/master/ahmia)
+# Specific run examples
 
-# How to use multiple Tor clients ?
-You can setup [TorBalancer](https://github.com/ahmia/TorBalancer) to do this.
-Don't forget to update the bot settings.py
+```sh
+Primary
+scrapy crawl ahmia-tor -s DEPTH_LIMIT=3 -s ROBOTSTXT_OBEY=0 -s FULL_PAGERANK_COMPUTE=True
+or
+scrapy crawl ahmia-tor -s DEPTH_LIMIT=5 -s LOG_LEVEL=INFO
+or
+scrapy crawl ahmia-i2p -s DEPTH_LIMIT=100 -s LOG_LEVEL=DEBUG
+or
+scrapy crawl ahmia-i2p -s DEPTH_LIMIT=1 -s ROBOTSTXT_OBEY=0
+or
+scrapy crawl ahmia-tor -o items.json -t json
+or
+scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=targetitemtype
+```

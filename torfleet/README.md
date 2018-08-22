@@ -9,8 +9,8 @@ Python2
 ```sh
 virtualenv venv
 source venv/bin/activate
-pip install socksipy-branch
-pip install PySocks
+pip install SocksiPy-branch==1.1
+pip install PySocks==1.6.8
 ```
 
 Python3
@@ -19,6 +19,13 @@ Python3
 virtualenv -p python3 venv
 source venv/bin/activate
 pip install socksipy-branch
+```
+
+Shortcut testing
+
+```sh
+$ python http_tor_proxy.py 15000 9050
+$ curl -x http://localhost:15000 http://msydqstlz2kzerdg.onion/
 ```
 
 Run
