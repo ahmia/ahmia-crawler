@@ -10,6 +10,9 @@ fi
 if [ ! -d "data/tor" ]; then
 	mkdir "data/tor"
 fi
+if [ ! -d "log" ]; then
+	mkdir "log"
+fi
 
 for i in {0..9}
 do
@@ -22,11 +25,11 @@ do
 		mkdir "data/tor/tor$i"
 	fi
 
-	echo "Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > tor_$i.log 2>&1 &"
-	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > tor_$i.log 2>&1 &
+	echo "Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &"
+	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &
 
-	echo "Running: nohup python3 http_tor_proxy.py http_port socks_port > http_proxy_$i.log 2>&1 &"
-	nohup python http_tor_proxy.py $http_port $socks_port > http_proxy_$i.log 2>&1 &
+	echo "Running: nohup python3 http_tor_proxy.py http_port socks_port > ./log/proxy_$i.log 2>&1 &"
+	nohup python http_tor_proxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
 done
 
 echo "HTTP proxy processes:"
