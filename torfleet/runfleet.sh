@@ -26,10 +26,10 @@ do
 	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > tor_$i.log 2>&1 &
 
 	echo "Running: nohup python3 http_tor_proxy.py http_port socks_port > http_proxy_$i.log 2>&1 &"
-	nohup python3 http_tor_proxy.py $http_port $socks_port > http_proxy_$i.log 2>&1 &
+	nohup python http_tor_proxy.py $http_port $socks_port > http_proxy_$i.log 2>&1 &
 done
 
 echo "HTTP proxy processes:"
-ps aux | grep http_tor_proxy | grep python3 | wc -l
+ps aux | grep http_tor_proxy | grep python | wc -l
 echo "Tor processes:"
 ps aux | grep tor | grep DataDirec | wc -l

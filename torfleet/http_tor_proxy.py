@@ -4,7 +4,7 @@ Traffic goes through socks5 on 127.0.0.1:ARG2
 which are Tor clients.
 For crawling purposes overrides HTTP status code 500 to 200!
 
-python3 http_tor_proxy.py
+python http_tor_proxy.py 15000 19050
 
 Test:
 curl -x http://localhost:15000 http://msydqstlz2kzerdg.onion/
@@ -38,21 +38,31 @@ socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", SOCKS_PORT)
 socket.socket = socks.socksocket
 socket.create_connection = create_connection
 
-import socketserver
-import http.server
-import urllib
-import urllib.parse
-import urllib.request
+if sys.version_info >= (3, 0):
+    import socketserver
+    import http.server
+    import urllib
+    import urllib.parse
+    from urllib.request import urlopen
+    HTTPError = urllib.request.HTTPError
+    HTTPHandler = http.server.SimpleHTTPRequestHandler
+if sys.version_info < (3, 0):
+    import SocketServer as socketserver
+    from SimpleHTTPServer import SimpleHTTPRequestHandler as HTTPHandler
+    import urllib2 as urllib
+    from urllib2 import urlopen
+    from urlparse import urlparse
+    HTTPError = urllib.HTTPError
 
 
-class Proxy(http.server.SimpleHTTPRequestHandler):
+class Proxy(HTTPHandler):
     def do_GET(self):
         print("GET", self.path)
 
         # Catch HTTP errors
         try:
-            response = urllib.request.urlopen(self.path)
-        except urllib.request.HTTPError as error:
+            response = urlopen(self.path)
+        except HTTPError as error:
             response = error
             # Change HTTP error code 500 to 200
             if response.code == 500:
@@ -67,8 +77,8 @@ class Proxy(http.server.SimpleHTTPRequestHandler):
         # Catch HTTP errors
         try:
             post_data = urllib.parse.urlencode(post_data)
-            response = urllib.request.urlopen(self.path, post_data)
-        except urllib.request.HTTPError as error:
+            response = urlopen(self.path, post_data)
+        except HTTPError as error:
             response = error
             # Change HTTP error code 500 to 200
             if response.code == 500:
