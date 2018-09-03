@@ -21,6 +21,25 @@ $ python torproxy.py 15000 9050
 $ curl -x http://localhost:15000 http://msydqstlz2kzerdg.onion/
 ```
 
+Install Polipo for HTTPS connections
+
+```sh
+$ sudo apt-get install polipo
+$ sudo cp config /etc/polipo/config
+# Set limits
+# Show limits
+$ ulimit -a -H
+# Add line
+# * - nofile 16384
+$ nano /etc/security/limits.conf
+$ ulimit -n 16384
+$ service polipo restart
+$ ps aux | grep polipo
+$ cat /proc/<POLIPO PID>/limits
+$ sudo service polipo restart
+```
+
+
 Run
 
 ```sh
