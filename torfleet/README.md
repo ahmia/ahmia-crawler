@@ -31,12 +31,11 @@ $ sudo cp config /etc/polipo/config
 $ ulimit -a -H
 # Add line
 # * - nofile 16384
-$ nano /etc/security/limits.conf
+$ sudo nano /etc/security/limits.conf
 $ ulimit -n 16384
-$ service polipo restart
+$ sudo service polipo restart
 $ ps aux | grep polipo
 $ cat /proc/<POLIPO PID>/limits
-$ sudo service polipo restart
 ```
 
 
