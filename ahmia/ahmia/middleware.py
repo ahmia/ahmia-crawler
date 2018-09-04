@@ -24,14 +24,17 @@ class ProxyMiddleware(object):
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         if ".onion" in domain and ".onion." not in domain:
+            # List of proxies available
+            if parsed_uri.scheme == "https": # For those few HTTPS onion websites
+                tor_proxy_list = settings.get('HTTPS_PROXY_TOR_PROXIES')
+            else: # Plain text HTTP without TLS
+                tor_proxy_list = settings.get('HTTP_PROXY_TOR_PROXIES')
             # Always select the same proxy for the same onion domain
             # This will keep only one underlining Tor circuit to the onion service
             # Onion addresses form an uniform distribution
             # Therefore this address can be used as a seed for random
             hash = '{uri.netloc}'.format(uri=parsed_uri).replace(".onion", "")
             random.seed( hash ) # A seed for randomness is the onion domain
-            # List of proxies available
-            tor_proxy_list = settings.get('HTTP_PROXY_TOR_PROXIES')
             # Always select the same proxy for the same onion address
             request.meta['proxy'] = random.choice(tor_proxy_list)
         elif ".i2p" in domain and ".i2p." not in domain:
