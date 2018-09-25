@@ -32,6 +32,8 @@ do
 	nohup python torproxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
 done
 
+sleep 3
+
 echo "HTTP proxy processes:"
 ps aux | grep torproxy | grep python | wc -l
 echo "Tor processes:"
