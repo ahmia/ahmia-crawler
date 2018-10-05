@@ -13,7 +13,7 @@ configparser==3.5.0
 constantly==15.1.0
 cryptography==2.3
 cssselect==1.0.1
-elasticsearch==5.4.0
+elasticsearch==6.3.1
 enum34==1.1.6
 html2text==2016.9.19
 hyperlink==17.2.1
