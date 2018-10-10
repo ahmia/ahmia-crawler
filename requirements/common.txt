@@ -26,7 +26,7 @@ lazy-object-proxy==1.2.2
 lxml==3.8.0
 mccabe==0.5.1
 parsel==1.2.0
-pyOpenSSL==17.0.0
+pyOpenSSL==17.5.0
 pyasn1==0.2.3
 pyasn1-modules==0.0.9
 pycparser==2.17
