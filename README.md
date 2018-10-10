@@ -34,7 +34,7 @@ dnf install tor polipo
 ```sh
 virtualenv /path/to/venv
 source /path/to/venv/bin/activate
-(venv)pip3 install -r requirements.txt
+(venv)pip3 install -r requirements/prod.txt
 ```
 
 ## Prefer own python HTTP proxy
