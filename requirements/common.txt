@@ -34,7 +34,7 @@ pylint==1.6.4
 python-igraph==0.7.1.post6
 python-ntlm3==1.0.2
 queuelib==1.4.2
-requests==2.10.0
+requests>=2.20.0
 requests-ntlm==0.3.0
 service-identity==17.0.0
 simplejson==3.8.2
