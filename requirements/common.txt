@@ -2,7 +2,7 @@ Automat==0.6.0
 PyDispatcher==2.0.5
 Scrapy==1.4.0
 ScrapyElasticSearch==0.9.1
-Twisted==17.5.0
+Twisted==19.2.1
 argparse==1.2.1
 asn1crypto==0.22.0
 astroid==1.4.8
