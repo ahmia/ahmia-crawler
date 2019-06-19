@@ -32,7 +32,9 @@ class OnionSpider(WebSpider):
          'http://msydqstlz2kzerdg.onion/address/',
          'http://msydqstlz2kzerdg.onion/add/onionsadded/',
          'https://blockchainbdgpzk.onion/',
-         'http://7cbqhjnlkivmigxf.onion/']
+         'http://7cbqhjnlkivmigxf.onion/',
+         'http://3bbaaaccczcbdddz.onion/discover',
+         'http://cb3rob5vwac2dtyc.onion/darknet/']
 
     url = "http://zlal32teyptf4tvi.onion/?search=&rep=n%2Fa&page="
     for i in range(1, 100):
