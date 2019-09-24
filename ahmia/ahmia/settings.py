@@ -70,12 +70,14 @@ DOWNLOADER_MIDDLEWARES = {
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/')
 for md5 in response.text.split("\n"):
+    md5 = md5.strip().replace(" ", "")
     if len(md5) is 32:
         BANNED_DOMAINS.append(md5)
 
 FAKE_DOMAINS = []
 response = requests.get('https://ahmia.fi/static/fakelist.txt')
 for onion in response.text.split("\n"):
+    onion = onion.strip().replace(" ", "")
     if len(onion) is 16:
         FAKE_DOMAINS.append('%s.onion' % onion)
 
