@@ -68,7 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 BANNED_DOMAINS = []
-response = requests.get('https://ahmia.fi/banned/')
+response = requests.get('https://ahmia.fi/banned/?987654321')
 for md5 in response.text.split("\n"):
     md5 = md5.strip().replace(" ", "")
     if len(md5) is 32:
