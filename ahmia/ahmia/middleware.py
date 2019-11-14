@@ -55,7 +55,10 @@ class FilterBannedDomains(object):
         domain = domain.replace("http://", "").replace("https://", "") \
                                               .replace("/", "")
         banned_domains = settings.get('BANNED_DOMAINS')
-        if hashlib.md5(domain.encode('utf-8')).hexdigest() in banned_domains:
+        domain_hash1 = hashlib.md5(domain.encode('utf-8')).hexdigest()
+        maindomain = ".".join(domain.split(".")[-2:])
+        maindomain_hash2 = hashlib.md5(maindomain.encode('utf-8')).hexdigest()
+        if domain_hash1 in banned_domains or maindomain_hash2 in banned_domains:
             # Do not execute this request
             request.meta['proxy'] = ""
             msg = "Ignoring request {}, This domain is banned." \
