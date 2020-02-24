@@ -14,7 +14,7 @@ if [ ! -d "log" ]; then
 	mkdir "log"
 fi
 
-for i in {0..9}
+for i in {0..29}
 do
 	socks_port=$((base_socks_port+i))
 	control_port=$((base_control_port+i))
