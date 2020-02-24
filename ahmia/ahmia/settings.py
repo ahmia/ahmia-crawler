@@ -85,7 +85,6 @@ for onion in response.text.split("\n"):
 HTTPS_PROXY_TOR_PROXIES = ["http://localhost:8123/"]  # Tor HTTPS Polipo proxy
 # Tor HTTP Python proxies localhost:15000 ... localhost:15029
 HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0,30)]
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:1500" + str(i) for i in range(0,10)]
 # i2p proxy settings
 HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
 HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost
