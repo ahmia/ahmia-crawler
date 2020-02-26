@@ -60,7 +60,8 @@ class FilterBannedDomains(object):
         maindomain_hash2 = hashlib.md5(maindomain.encode('utf-8')).hexdigest()
         seed_domain_list = []
         for seed_url in settings.get('SEEDLIST'):
-            seed_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=seed_url)
+            parsed_uri = urlparse(seed_url)
+            seed_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
             seed_domain = seed_domain.replace("http://", "").replace("https://", "") \
                                                             .replace("/", "")
             seed_domain = ".".join(seed_domain.split(".")[-2:])
