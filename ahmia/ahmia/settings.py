@@ -73,7 +73,8 @@ SEEDLIST = ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
          'http://msydqstlz2kzerdg.onion/add/onionsadded/',
          'http://3bbaaaccczcbdddz.onion/discover',
          'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=20&pg=1&lang=en',
-         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en']
+         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en',
+         'https://github.com/alecmuffett/real-world-onion-sites']
 
 url = "http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=19&pg="
 for i in range(1, 500):
