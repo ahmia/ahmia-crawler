@@ -67,6 +67,18 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
+SEEDLIST = ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
+         'http://tt3j2x4k5ycaa5zt.onion/',
+         'http://msydqstlz2kzerdg.onion/address/',
+         'http://msydqstlz2kzerdg.onion/add/onionsadded/',
+         'http://3bbaaaccczcbdddz.onion/discover',
+         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=20&pg=1&lang=en',
+         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en']
+
+url = "http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=19&pg="
+for i in range(1, 500):
+    SEEDLIST.append(url + str(i))
+
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/?987654321')
 for md5 in response.text.split("\n"):
