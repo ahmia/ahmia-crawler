@@ -31,14 +31,11 @@ class OnionSpider(WebSpider):
          'http://tt3j2x4k5ycaa5zt.onion/',
          'http://msydqstlz2kzerdg.onion/address/',
          'http://msydqstlz2kzerdg.onion/add/onionsadded/',
-         'https://blockchainbdgpzk.onion/',
-         'http://7cbqhjnlkivmigxf.onion/',
-         'http://3bbaaaccczcbdddz.onion/discover',
-         'http://cb3rob5vwac2dtyc.onion/darknet/']
+         'http://3bbaaaccczcbdddz.onion/discover']
 
-    url = "http://zlal32teyptf4tvi.onion/?search=&rep=n%2Fa&page="
-    for i in range(1, 100):
-        default_start_url.append(url + str(i))
+    #url = "http://zlal32teyptf4tvi.onion/?search=&rep=n%2Fa&page="
+    #for i in range(1, 100):
+    #    default_start_url.append(url + str(i))
 
     def get_link_extractor(self):
         return LinkExtractor(allow=[r'^http://[a-z2-7]{16}.onion', r'^http://[a-z2-7]{56}.onion'],
