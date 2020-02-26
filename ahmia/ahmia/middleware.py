@@ -58,8 +58,14 @@ class FilterBannedDomains(object):
         domain_hash1 = hashlib.md5(domain.encode('utf-8')).hexdigest()
         maindomain = ".".join(domain.split(".")[-2:])
         maindomain_hash2 = hashlib.md5(maindomain.encode('utf-8')).hexdigest()
-        seedlist = settings.get('SEEDLIST')
-        if not domain in seedlist and not maindomain in seedlist:
+        seed_domain_list = []
+        for seed_url in settings.get('SEEDLIST'):
+            seed_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=seed_url)
+            seed_domain = seed_domain.replace("http://", "").replace("https://", "") \
+                                                            .replace("/", "")
+            seed_domain = ".".join(seed_domain.split(".")[-2:])
+            seed_domain_list.append(seed_domain)
+        if not domain in seed_domain_list and not maindomain in seed_domain_list:
             if domain_hash1 in banned_domains or maindomain_hash2 in banned_domains:
                 # Do not execute this request
                 request.meta['proxy'] = ""
