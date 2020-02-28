@@ -202,6 +202,9 @@ class WebSpider(CrawlSpider):
             link_name_str = link_name_str.lstrip()
             link_name_str = link_name_str.rstrip()
             link_obj['link_name'] = link_name_str
+            # Skip extremely long "links" and link names (non-sense, broken HTML)
+            if len(link_obj['link']) >= 500 or link_obj['link_name'] >= 500:
+                continue # Skip, cannot be right link name or link URL
             links.append(link_obj)
         doc_loader.add_value('links', links)
 
@@ -223,4 +226,12 @@ class WebSpider(CrawlSpider):
         doc_loader.add_value('updated_on', datetime.datetime.now().strftime(
             "%Y-%m-%dT%H:%M:%S"))
         item = doc_loader.load_item()
+        # Clean extremy long weird text content from the item
+        item["h1"] = item.get("h1", "")[0:100]
+        item["title"] = item.get("title", "")[0:100]
+        item["raw_title"] = item.get("raw_title", "")[0:100]
+        item["content_type"] = item.get("content_type", "")[0:100]
+        item["meta"] = item.get("meta", "")[0:1000]
+        item["content"] = item.get("content", "")[0:500000]
+        item["raw_text"] = item.get("raw_text", "")[0:500000]
         return item
