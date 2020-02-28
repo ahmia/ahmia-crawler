@@ -203,7 +203,7 @@ class WebSpider(CrawlSpider):
             link_name_str = link_name_str.rstrip()
             link_obj['link_name'] = link_name_str
             # Skip extremely long "links" and link names (non-sense, broken HTML)
-            if len(link_obj['link']) >= 500 or link_obj['link_name'] >= 500:
+            if len(link_obj['link']) >= 500 or len(link_obj['link_name']) >= 500:
                 continue # Skip, cannot be right link name or link URL
             links.append(link_obj)
         doc_loader.add_value('links', links)
