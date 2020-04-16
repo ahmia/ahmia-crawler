@@ -12,12 +12,13 @@ virtualenv venv
 source venv/bin/activate
 pip install SocksiPy-branch==1.1
 pip install PySocks==1.6.8
+(python2.7 -m pip install...)
 ```
 
 Shortcut testing
 
 ```sh
-$ python torproxy.py 15000 9050
+$ python2.7 torproxy.py 15000 9050
 $ curl -x http://localhost:15000 http://msydqstlz2kzerdg.onion/
 ```
 
