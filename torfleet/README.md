@@ -1,6 +1,6 @@
-# Torfleet and Python load balancer proxy
+# Torfleet and Python load balance proxies
 
-Several Tor clients and Python2 proxy.
+Several Tor clients and Python2.7 proxies.
 Crawler already has a load balancing that keeps the same client for the same domain.
 
 # Installation and utilization
@@ -8,11 +8,11 @@ Crawler already has a load balancing that keeps the same client for the same dom
 Python2
 
 ```sh
-virtualenv venv
+python2.7 -m virtualenv venv
 source venv/bin/activate
 pip install SocksiPy-branch==1.1
 pip install PySocks==1.6.8
-(python2.7 -m pip install...)
+(or globally 'python2.7 -m pip install'...)
 ```
 
 Shortcut testing
