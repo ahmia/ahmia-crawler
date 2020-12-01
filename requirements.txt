@@ -1,0 +1,8 @@
+requests==2.25.0
+elasticsearch==7.10.0
+html2text==2020.1.16
+python_igraph==0.8.3
+scrapy==2.4.1
+scrapyelasticsearch==0.9.2
+simhash==2.0.0
+SocksiPy_branch==1.01

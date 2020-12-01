@@ -27,19 +27,31 @@ if settings['RESEARCH_GATHER']:
 
 
 # *** Optional: for research ***
-def simhash(s): 
-        width = 3
-        sim = s.strip()
-        sim = sim.lower()
-        sim.replace(",","")
-        sim.replace("\n","")
-        sim = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', sim, flags=re.MULTILINE)
-        sim = re.sub('mailto://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', sim, flags=re.MULTILINE)
-        sim = re.sub(r'[^\w]+', '', sim)
-        sim = re.sub('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$', '',sim, flags = re.MULTILINE)
-        features =  [sim[i:i + width] for i in range(max(len(sim) - width + 1, 1))]
-        shash = Simhash(features)
-        return shash
+def simhash(s):
+    width = 3
+    sim = s.strip()
+    sim = sim.lower()
+    sim.replace(",", "")
+    sim.replace("\n", "")
+    sim = re.sub(
+        'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+        '',
+        sim,
+        flags=re.MULTILINE)
+    sim = re.sub(
+        'mailto://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+        '',
+        sim,
+        flags=re.MULTILINE)
+    sim = re.sub(r'[^\w]+', '', sim)
+    sim = re.sub(
+        '^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$',
+        '',
+        sim,
+        flags=re.MULTILINE)
+    features = [sim[i:i + width] for i in range(max(len(sim) - width + 1, 1))]
+    shash = Simhash(features)
+    return shash
 
 
 # *** Optional: for research ***
@@ -47,6 +59,7 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
     """
     Take a copy of item and save it to different index for research purposes.
     """
+
     def index_item(self, item):
         index_name = self.settings['ELASTICSEARCH_RESEARCH_INDEX']
         index_suffix_format = self.settings.get(
@@ -71,8 +84,8 @@ class HistoricalElasticSearchPipeline(ElasticSearchPipeline):
                 '_type': self.settings['ELASTICSEARCH_CRAWL_TYPE'],
                 'crawl_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
                 'content_simhash': s_val,
-                'domain' : item['domain'],
-                'raw_title' : item['raw_title']
+                'domain': item['domain'],
+                'raw_title': item['raw_title']
             }
             self.items_buffer.append(crawl_index_action)
         else:
@@ -101,7 +114,8 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
             'ELASTICSEARCH_INDEX_DATE_FORMAT', None)
 
         if index_suffix_format:
-            self.index_name += "-" + datetime.strftime(datetime.now(), index_suffix_format)
+            self.index_name += "-" + \
+                datetime.strftime(datetime.now(), index_suffix_format)
 
         if isinstance(item, DocumentItem):
             index_action = {
@@ -130,10 +144,9 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
                     "doc": {
                         "anchors": anchors,
                         "url": item['target'],
-                        "domain": urlparse(item['target']).hostname,
-                        "updated_on": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                    }
-                }
+                        "domain": urlparse(
+                            item['target']).hostname,
+                        "updated_on": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")}}
             else:
                 index_action = {
                     '_index': self.index_name,
@@ -156,7 +169,10 @@ class CustomElasticSearchPipeline(ElasticSearchPipeline):
 
         self.items_buffer.append(index_action)
 
-        if len(self.items_buffer) >= self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
+        if len(
+                self.items_buffer) >= self.settings.get(
+                'ELASTICSEARCH_BUFFER_LENGTH',
+                500):
             self.send_items()
             self.items_buffer = []
 

@@ -19,22 +19,23 @@ from scrapy.exceptions import IgnoreRequest
 
 class ProxyMiddleware(object):
     """Middleware for .onion/.i2p addresses."""
+
     def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         parsed_uri = urlparse(request.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         if ".onion" in domain and ".onion." not in domain:
             # List of proxies available
-            if parsed_uri.scheme == "https": # For those few HTTPS onion websites
+            if parsed_uri.scheme == "https":  # For those few HTTPS onion websites
                 tor_proxy_list = settings.get('HTTPS_PROXY_TOR_PROXIES')
-            else: # Plain text HTTP without TLS
+            else:  # Plain text HTTP without TLS
                 tor_proxy_list = settings.get('HTTP_PROXY_TOR_PROXIES')
             # Always select the same proxy for the same onion domain
             # This will keep only one underlining Tor circuit to the onion service
             # Onion addresses form an uniform distribution
             # Therefore this address can be used as a seed for random
             hash = '{uri.netloc}'.format(uri=parsed_uri).replace(".onion", "")
-            random.seed( hash ) # A seed for randomness is the onion domain
+            random.seed(hash)  # A seed for randomness is the onion domain
             # Always select the same proxy for the same onion address
             request.meta['proxy'] = random.choice(tor_proxy_list)
         elif ".i2p" in domain and ".i2p." not in domain:
@@ -48,6 +49,7 @@ class FilterBannedDomains(object):
     """
     Middleware to filter requests to banned domains.
     """
+
     def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         parsed_uri = urlparse(request.url)
@@ -62,11 +64,16 @@ class FilterBannedDomains(object):
         for seed_url in settings.get('SEEDLIST'):
             parsed_uri = urlparse(seed_url)
             seed_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
-            seed_domain = seed_domain.replace("http://", "").replace("https://", "") \
-                                                            .replace("/", "")
+            seed_domain = seed_domain.replace(
+                "http://",
+                "").replace(
+                "https://",
+                "") .replace(
+                "/",
+                "")
             seed_domain = ".".join(seed_domain.split(".")[-2:])
             seed_domain_list.append(seed_domain)
-        if not domain in seed_domain_list and not maindomain in seed_domain_list:
+        if domain in seed_domain_list and not maindomain not in seed_domain_list:
             if domain_hash1 in banned_domains or maindomain_hash2 in banned_domains:
                 # Do not execute this request
                 request.meta['proxy'] = ""
@@ -80,6 +87,7 @@ class SubDomainLimit(object):
     """
     Ignore weird sub domain loops (for instance, rss..rss.rss.something.onion)
     """
+
     def process_request(self, request, spider):  # todo pylint:disable=unused-argument
         """Process incoming request."""
         hostname = urlparse(request.url).hostname
@@ -105,7 +113,8 @@ class FilterResponses(object):
                 return True
         return False
 
-    def process_response(self, request, response, spider):  # todo pylint:disable=unused-argument
+    # todo pylint:disable=unused-argument
+    def process_response(self, request, response, spider):
         """
         Only allow HTTP response types that that match the given list of
         filtering regexs

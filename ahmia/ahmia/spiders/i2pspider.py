@@ -21,7 +21,8 @@ class InvisibleInternetSpider(WebSpider):
         'ITEM_PIPELINES': {
             'ahmia.pipelines.I2PPipeline': 200
         },
-        # Automatic index name selection according to YEAR-MONTH, i.e. i2p-2017-12
+        # Automatic index name selection according to YEAR-MONTH, i.e.
+        # i2p-2017-12
         'ELASTICSEARCH_INDEX': datetime.datetime.now().strftime("i2p-%Y-%m")
     }
     default_start_url = ['http://nekhbet.com/i2p_links.shtml', ]

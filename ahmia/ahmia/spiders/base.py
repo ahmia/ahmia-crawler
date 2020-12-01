@@ -83,9 +83,9 @@ class WebSpider(CrawlSpider):
             if array[middle] == key:   # if the middle is our key
                 return middle
             elif key < array[middle]:  # our key might be in the left sub-array
-                return binary_search(array, key, low, middle-1)
+                return binary_search(array, key, low, middle - 1)
             else:                      # our key might be in the right sub-array
-                return binary_search(array, key, middle+1, high)
+                return binary_search(array, key, middle + 1, high)
 
         es_obj = ElasticSearchPipeline.from_crawler(self.crawler).es
         new_links = []
@@ -125,8 +125,10 @@ class WebSpider(CrawlSpider):
                 #response = HtmlResponse(url, encoding="utf-8", body=content)
                 response = HtmlResponse(url, body=content)
                 for request in self._requests_to_follow(response):
-                    hash_target = hashlib.sha1(request.url.encode('utf-8')).hexdigest()
-                    if binary_search(hashes, hash_target, 0, len(hashes)-1) < 0:
+                    hash_target = hashlib.sha1(
+                        request.url.encode('utf-8')).hexdigest()
+                    if binary_search(
+                            hashes, hash_target, 0, len(hashes) - 1) < 0:
                         continue
                     new_links.append((id_,
                                       hash_target))
@@ -202,9 +204,12 @@ class WebSpider(CrawlSpider):
             link_name_str = link_name_str.lstrip()
             link_name_str = link_name_str.rstrip()
             link_obj['link_name'] = link_name_str
-            # Skip extremely long "links" and link names (non-sense, broken HTML)
-            if len(link_obj['link']) >= 500 or len(link_obj['link_name']) >= 500:
-                continue # Skip, cannot be right link name or link URL
+            # Skip extremely long "links" and link names (non-sense, broken
+            # HTML)
+            if len(
+                    link_obj['link']) >= 500 or len(
+                    link_obj['link_name']) >= 500:
+                continue  # Skip, cannot be right link name or link URL
             links.append(link_obj)
         doc_loader.add_value('links', links)
 

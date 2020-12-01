@@ -18,19 +18,21 @@ try:
     if len(sys.argv) == 3:
         HTTP_PROXY_PORT = int(sys.argv[1])
         SOCKS_PORT = int(sys.argv[2])
-        print("HTTP proxy %d <---> SOCKS %d" % (HTTP_PROXY_PORT, SOCKS_PORT) )
+        print("HTTP proxy %d <---> SOCKS %d" % (HTTP_PROXY_PORT, SOCKS_PORT))
         print("Opening HTTP proxy localhost:%d" % HTTP_PROXY_PORT)
     else:
         print("python3 http_tor_proxy.py <SOCKS_PORT> <HTTP_PROXY_PORT>")
         sys.exit()
 except Exception as e:
-    print( str(e) )
+    print(str(e))
     sys.exit()
+
 
 def create_connection(address, timeout=None, source_address=None):
     sock = socks.socksocket()
     sock.connect(address)
     return sock
+
 
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", SOCKS_PORT)
 
@@ -84,6 +86,7 @@ class Proxy(HTTPHandler):
             if response.code == 500:
                 response.code = 200
         self.copyfile(response, self.wfile)
+
 
 httpd = socketserver.ForkingTCPServer(('', HTTP_PROXY_PORT), Proxy)
 print("Serving at port %d" % HTTP_PROXY_PORT)

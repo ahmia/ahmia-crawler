@@ -21,7 +21,8 @@ class OnionSpider(WebSpider):
         'ITEM_PIPELINES': {
             'ahmia.pipelines.OnionPipeline': 200
         },
-        # Automatic index name selection according to YEAR-MONTH, i.e. tor-2017-12
+        # Automatic index name selection according to YEAR-MONTH, i.e.
+        # tor-2017-12
         'ELASTICSEARCH_INDEX': datetime.datetime.now().strftime("tor-%Y-%m")
     }
     if settings['RESEARCH_GATHER']:
@@ -29,7 +30,11 @@ class OnionSpider(WebSpider):
     default_start_url = settings['SEEDLIST']
 
     def get_link_extractor(self):
-        return LinkExtractor(allow=[r'^http://[a-z2-7]{16}.onion', r'^http://[a-z2-7]{56}.onion'],
-                             deny=[r'^https://blockchainbdgpzk.onion/address/',
-                                   r'^https://blockchainbdgpzk.onion/tx/'],
-                             deny_domains=settings.get('FAKE_DOMAINS'))
+        return LinkExtractor(
+            allow=[
+                r'^http://[a-z2-7]{16}.onion',
+                r'^http://[a-z2-7]{56}.onion'],
+            deny=[
+                r'^https://blockchainbdgpzk.onion/address/',
+                r'^https://blockchainbdgpzk.onion/tx/'],
+            deny_domains=settings.get('FAKE_DOMAINS'))

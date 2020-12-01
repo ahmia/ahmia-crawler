@@ -11,7 +11,7 @@
 
 import logging
 import requests  # To fetch the list of banned domains
-import datetime # Index name according to YEAR-MONTH
+import datetime  # Index name according to YEAR-MONTH
 
 BOT_NAME = 'ahmia'
 
@@ -67,14 +67,15 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
-SEEDLIST = ['http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
-         'http://tt3j2x4k5ycaa5zt.onion/',
-         'http://msydqstlz2kzerdg.onion/address/',
-         'http://msydqstlz2kzerdg.onion/add/onionsadded/',
-         'http://3bbaaaccczcbdddz.onion/discover',
-         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=20&pg=1&lang=en',
-         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en',
-         'https://github.com/alecmuffett/real-world-onion-sites']
+SEEDLIST = [
+    'http://zqktlwi4fecvo6ri.onion/wiki/index.php/Main_Page',
+    'http://tt3j2x4k5ycaa5zt.onion/',
+    'http://msydqstlz2kzerdg.onion/address/',
+    'http://msydqstlz2kzerdg.onion/add/onionsadded/',
+    'http://3bbaaaccczcbdddz.onion/discover',
+    'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=20&pg=1&lang=en',
+    'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en',
+    'https://github.com/alecmuffett/real-world-onion-sites']
 
 url = "http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=19&pg="
 for i in range(1, 500):
@@ -97,7 +98,7 @@ for onion in response.text.split("\n"):
 # Tor proxy settings
 HTTPS_PROXY_TOR_PROXIES = ["http://localhost:8123/"]  # Tor HTTPS Polipo proxy
 # Tor HTTP Python proxies localhost:15000 ... localhost:15029
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0,30)]
+HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0, 30)]
 # i2p proxy settings
-HTTP_PROXY_I2P = "http://localhost:4444/" # HTTP i2p proxy in localhost
-HTTPS_PROXY_I2P = "http://localhost:4445/" # HTTPS i2p proxy in localhost
+HTTP_PROXY_I2P = "http://localhost:4444/"  # HTTP i2p proxy in localhost
+HTTPS_PROXY_I2P = "http://localhost:4445/"  # HTTPS i2p proxy in localhost
