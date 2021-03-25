@@ -25,8 +25,8 @@ do
 		mkdir "data/tor/tor$i"
 	fi
 
-	echo "Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &"
-	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --SocksBindAddress 127.0.0.1 --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &
+	echo "Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --ControlPort $control_port --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &"
+	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --ControlPort $control_port --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &
 
 	sleep 1
 
