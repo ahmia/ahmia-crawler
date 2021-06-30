@@ -31,7 +31,7 @@ do
 	sleep 1
 
 	echo "Running: nohup python torproxy.py http_port socks_port > ./log/proxy_$i.log 2>&1 &"
-	nohup ./venv/bin/python torproxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
+	nohup python2.7 torproxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
 
 	sleep 1
 

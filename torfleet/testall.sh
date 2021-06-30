@@ -6,5 +6,5 @@ do
 	http_port=$((base_http_port+i))
 
 	echo "Testing HTTP proxy localhost:$http_port"
-	curl -x http://localhost:$http_port http://msydqstlz2kzerdg.onion/robots.txt
+	curl -x http://localhost:$http_port "http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/robots.txt"
 done

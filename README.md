@@ -32,9 +32,9 @@ dnf install tor polipo
 ## Install requirements in a virtual environment
 
 ```sh
-virtualenv /path/to/venv
-source /path/to/venv/bin/activate
-(venv)pip3 install -r requirements/prod.txt
+python3 -m virtualenv venv3
+source venv3/bin/activate
+python3 -m pip install -r requirements/prod.txt
 ```
 
 ## Prefer own python HTTP proxy
@@ -46,7 +46,7 @@ Look fleet installation
 
 In order to execute the crawler to run permanently:
 ```
-source /path/to/venv/bin/activate
+source venv/bin/activate
 ./run.sh &> crawler.log
 ```
 
