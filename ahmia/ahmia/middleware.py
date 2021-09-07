@@ -27,7 +27,7 @@ class ProxyMiddleware(object):
             if domain[-7:-1] != '.onion':
                 raise IgnoreRequest() # Not .onion domain
             # Drop connections to the old onion v2 addresses and other invalid domains
-            if len(domain.split('.')[-2]) != 56:
+            if len(domain.split('.')[-2].replace('http://', '').replace('https://', '')) != 56:
                 raise IgnoreRequest() # Not a valid onion v3 address
             # List of proxies available
             if parsed_uri.scheme == "https": # For those few HTTPS onion websites
