@@ -25,9 +25,13 @@ class ProxyMiddleware(object):
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
         if '.onion' in domain:
             if domain[-7:-1] != '.onion':
+                msg = 'Ignoring request %s, not .onion domain.' % domain
+                logging.info(msg)
                 raise IgnoreRequest() # Not .onion domain
             # Drop connections to the old onion v2 addresses and other invalid domains
             if len(domain.split('.')[-2].replace('http://', '').replace('https://', '')) != 56:
+                msg = 'Ignoring request %s, not v3 onion domain.' % domain
+                logging.info(msg)
                 raise IgnoreRequest() # Not a valid onion v3 address
             # List of proxies available
             if parsed_uri.scheme == "https": # For those few HTTPS onion websites
