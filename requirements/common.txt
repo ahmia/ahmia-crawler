@@ -36,7 +36,7 @@ python-ntlm3==1.0.2
 queuelib==1.6.1
 requests==2.25.1
 requests-ntlm==0.3.0
-Scrapy==1.4.0
+Scrapy==1.8.1
 ScrapyElasticSearch==0.9.1
 service-identity==21.1.0
 simplejson==3.8.2
