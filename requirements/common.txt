@@ -41,7 +41,7 @@ ScrapyElasticSearch==0.9.1
 service-identity==21.1.0
 simplejson==3.8.2
 six==1.16.0
-Twisted==20.3.0
+Twisted==22.1.0
 urllib3==1.26.6
 w3lib==1.22.0
 wrapt==1.12.1
