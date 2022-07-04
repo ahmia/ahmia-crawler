@@ -9,9 +9,9 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
+import datetime # Index name according to YEAR-MONTH
 import logging
 import requests  # To fetch the list of banned domains
-import datetime # Index name according to YEAR-MONTH
 
 BOT_NAME = 'ahmia'
 
@@ -67,18 +67,23 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middleware.SubDomainLimit': 500,
 }
 
-SEEDLIST = ['http://zqktlwiuavvvqqt4ybvgvi7tyo4hjl5xgfuvpdf6otjiycgwqbym2qad.onion/wiki/index.php/Main_Page',
+SEEDLIST = ['http://torlinkv7cft5zhegrokjrxj2st4hcimgidaxdmcmdpcrnwfxrr2zxqd.onion/',
+         'http://fvrifdnu75abxcoegldwea6ke7tnb3fxwupedavf5m3yg3y2xqyvi5qd.onion/',
+         'http://zqktlwiuavvvqqt4ybvgvi7tyo4hjl5xgfuvpdf6otjiycgwqbym2qad.onion/wiki/index.php/Main_Page',
          'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
          'http://tt3j2x4k5ycaa5zt.onion/',
          'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
          'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',
+         'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=19&pg=1',
          'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=20&pg=1&lang=en',
          'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=7&pg=1&lang=en',
          'https://github.com/alecmuffett/real-world-onion-sites']
 
-url = "http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=19&pg="
-for i in range(1, 500):
-    SEEDLIST.append(url + str(i))
+url1 = 'http://donionsixbjtiohce24abfgsffo2l4tk26qx464zylumgejukfq2vead.onion/?cat=18&pg='
+url2 = 'http://ubc4jupmrxzk5367ndkm2k66h6txtj5jg4ulscx4qb2wqnx2drevbwad.onion/'
+for index in range(1, 100):
+    SEEDLIST.append(url1 + str(index))
+    SEEDLIST.append(url2 + str(index))
 
 BANNED_DOMAINS = []
 response = requests.get('https://ahmia.fi/banned/?987654321')
