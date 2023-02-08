@@ -8,7 +8,7 @@ cffi==1.14.5
 chardet==4.0.0
 configparser==3.5.0
 constantly==15.1.0
-cryptography==3.4.7
+cryptography==39.0.1
 cssselect==1.1.0
 elasticsearch==5.5.3
 enum34==1.1.6
