@@ -13,19 +13,16 @@ while true; do
     echo "Sleep $sleeptime seconds between re-call"
     echo ""
     # Max execution time is two days, depth = 1
-    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s ROBOTSTXT_OBEY=0 -s FULL_PAGERANK_COMPUTE=True
+    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s FULL_PAGERANK_COMPUTE=True
     sleep $sleeptime
     # Max execution time is two days, depth = 2
-    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=2 -s ROBOTSTXT_OBEY=0 -s FULL_PAGERANK_COMPUTE=True
+    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=2 -s FULL_PAGERANK_COMPUTE=True
     sleep $sleeptime
     # Max execution time is two days, depth = 3
-    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=3 -s ROBOTSTXT_OBEY=0 -s FULL_PAGERANK_COMPUTE=True
+    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=3 -s FULL_PAGERANK_COMPUTE=True
     # Sleep and run again
     echo ""
     echo "Sleeping $sleeptime seconds..."
     echo ""
     sleep $sleeptime
 done
-
-# todo add command to run ahmia-i2p spider in parallel
-# todo add SIGKILL handler/trap for the child (scrapy) processes?

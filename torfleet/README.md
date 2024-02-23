@@ -1,32 +1,24 @@
 # Torfleet and Python load balance proxies
 
-Several Tor clients and Python2.7 proxies.
+Several Tor clients and Python proxies.
 Crawler already has a load balancing that keeps the same client for the same domain.
 
 # Shortcut testing
 
 ```sh
-$ python2.7 torproxy.py 15000 9050
-$ curl -x http://localhost:15000 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/
+python torproxy.py 19050 9050
+curl --proxy http://localhost:19050 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/robots.txt
 ```
 
-Install Polipo for HTTPS connections
+Install Privoxy for HTTPS connections
 
 ```sh
-$ sudo apt-get install polipo
-$ sudo cp config /etc/polipo/config
-# Set limits
-# Show limits
-$ ulimit -a -H
-# Add line
-# * - nofile 16384
-$ sudo nano /etc/security/limits.conf
-$ ulimit -n 16384
-$ sudo service polipo restart
-$ ps aux | grep polipo
-$ cat /proc/<POLIPO PID>/limits
+# Add
+# forward-socks5t   /               127.0.0.1:9050 .
+sudo systemctl start privoxy
+curl -v --proxy 127.0.0.1:8118 https://ahmia.fi/robots.txt
+curl --proxy 127.0.0.1:8118 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/robots.txt
 ```
-
 
 Run
 
@@ -37,7 +29,7 @@ bash runfleet.sh
 Wait at least a minute and you can test the HTTP proxies
 
 ```sh
-curl -x http://localhost:15000 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/
+curl -x http://localhost:15000 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/robots.txt
 bash testall.sh
 ```
 

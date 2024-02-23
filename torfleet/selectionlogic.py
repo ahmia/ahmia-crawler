@@ -2,20 +2,20 @@ import random
 from urllib.parse import urlparse
 
 urls = [
-    "http://2222222222222222.onion/foo.txt", # Same proxyN to these
-    "http://2222222222222222.onion/bar.txt", # Same proxyN to these
-    "http://2222222222222223.onion/lol.txt", # ProxyA
-    "http://2222222222222224.onion/lol.txt", # ProxyB etc.
-    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/foo.txt",
-    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/bar.txt",
-    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawki5.onion/lol.txt",
-    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawki7.onion/lol.txt",
+    "http://1111hx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/abv.txt", # Same proxyN to these
+    "http://1111hx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/bar.txt", # Same proxyN to these
+    "http://2222225prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/ABC/1", # ProxyA
+    "http://2222225prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/BBB/2", # ProxyA
+    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/foo.txt", # ProxyB
+    "http://45tbhx5prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/bar.txt", # ProxyB
+    "http://3322225prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/lol.txt", # ProxyC
+    "http://4422225prlejzjgn36nqaxqb6qnm73pbohuvqkpxz2zowh57bxqawkid.onion/lol.txt", # ProxyD
 ]
 
-for u in urls:
-    parsed_uri = urlparse(u)
-    hash = '{uri.netloc}'.format(uri=parsed_uri).replace(".onion", "")
-    random.seed( hash ) # A seed for randomness is the onion domain
+for url in urls:
+    parsed_uri = urlparse(url)
+    domain = domain = parsed_uri.netloc
+    random.seed(domain) # A seed for randomness is the onion domain
     # List of proxies available
     tor_proxy_list = list( range(8080,8090) )
     # Always select the same proxy for the same onion address

@@ -1,7 +1,6 @@
 #!/bin/bash
 base_socks_port=19050
 base_http_port=15000
-base_control_port=38118
 
 # Create data directory if it doesn't exist
 if [ ! -d "data" ]; then
@@ -17,7 +16,6 @@ fi
 for i in {0..29}
 do
 	socks_port=$((base_socks_port+i))
-	control_port=$((base_control_port+i))
 	http_port=$((base_http_port+i))
 
 	if [ ! -d "data/tor/tor$i" ]; then
@@ -25,13 +23,13 @@ do
 		mkdir "data/tor/tor$i"
 	fi
 
-	echo "Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --ControlPort $control_port --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &"
-	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --ControlPort $control_port --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &
+	echo 'Running: tor --CookieAuthentication 0 --HashedControlPassword '' --ControlPort 0 --ControlSocket 0 --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --Log "warn file ./log/warnings.log" --Log "err file ./log/errors.log" --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &'
+	nohup tor --CookieAuthentication 0 --HashedControlPassword "" --ControlPort 0 --ControlSocket 0 --ClientOnly 1 --NewCircuitPeriod 15 --MaxCircuitDirtiness 15 --NumEntryGuards 8 --PidFile tor$i.pid --SocksPort 127.0.0.1:$socks_port --Log "warn file ./log/warnings.log" --Log "err file ./log/errors.log" --DataDirectory data/tor$i > ./log/tor_$i.log 2>&1 &
 
 	sleep 1
 
 	echo "Running: nohup python torproxy.py http_port socks_port > ./log/proxy_$i.log 2>&1 &"
-	nohup python2.7 torproxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
+	nohup python torproxy.py $http_port $socks_port > ./log/proxy_$i.log 2>&1 &
 
 	sleep 1
 
