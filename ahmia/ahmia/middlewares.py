@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 settings = get_project_settings()
 
 class ProxyMiddleware(object):
-    """Middleware for .onion/.i2p addresses."""
+    """Middleware for .onion addresses."""
     def process_request(self, request, spider):
         """Process incoming request."""
         parsed_uri = urlparse(request.url)

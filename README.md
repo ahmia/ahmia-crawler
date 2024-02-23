@@ -2,27 +2,12 @@
 
 Ahmia is the search engine for `.onion` domains on the Tor anonymity
 network. It is led by [Juha Nurmi](//github.com/juhanurmi) and is based
-in Finland. This repository contains crawlers used by [Ahmia](https://github.com/ahmia) search engine.
+in Finland. This repository contains crawlers used by [Ahmia](https://ahmia.fi/) search engine.
 
 # Prerequisites
 [Ahmia-index](https://github.com/ahmia/ahmia-index) should be installed and running
 
 # Installation guide
-
-## Linux
-
-```sh
-build-essential
-python-pip
-python-virtualenv
-libxml2-dev
-libxslt1-dev
-python-dev
-libffi-dev
-libssl-dev
-tor
-polipo
-```
 
 ## Install requirements in a virtual environment
 
@@ -57,16 +42,9 @@ source venv/bin/activate
 # Specific run examples
 
 ```sh
-Primary
-scrapy crawl ahmia-tor -s DEPTH_LIMIT=3 -s ROBOTSTXT_OBEY=0 -s FULL_PAGERANK_COMPUTE=True
-or
-scrapy crawl ahmia-tor -s DEPTH_LIMIT=5 -s LOG_LEVEL=INFO
-or
-scrapy crawl ahmia-tor -s DEPTH_LIMIT=100 -s LOG_LEVEL=DEBUG
-or
-scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s ROBOTSTXT_OBEY=0
+scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s LOG_LEVEL=DEBUG
 or
 scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -O items.json:json
 or
-scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s ALLOWED_DOMAINS=/home/juha/allowed_domains.txt -s TARGET_SITES=/home/juha/seed_list.txt -s ELASTICSEARCH_TYPE=targetitemtype
+scrapy crawl ahmia-tor -s DEPTH_LIMIT=3 -s FULL_PAGERANK_COMPUTE=True
 ```

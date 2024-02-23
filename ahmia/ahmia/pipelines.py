@@ -19,10 +19,18 @@ class CustomElasticSearchPipeline:
     def __init__(self):
         self.es = Elasticsearch(
             [settings.get('ELASTICSEARCH_SERVER')],
-            http_auth=(settings.get('ELASTICSEARCH_USERNAME'), settings.get('ELASTICSEARCH_PASSWORD')),
+            http_auth=(settings.get('ELASTICSEARCH_USERNAME'),
+            settings.get('ELASTICSEARCH_PASSWORD')),
             ca_certs=settings.get('ELASTICSEARCH_CA_CERTS', None)
         )
         self.index_name = settings.get('ELASTICSEARCH_INDEX')
+
+    def process_item(self, item, spider):
+        """
+        This is the function Scrapy calls for the each pipeline
+        """
+        self.index_item(item)
+        return item  # To continue passing items through other pipelines
 
     def index_item(self, item):
         """
@@ -30,7 +38,10 @@ class CustomElasticSearchPipeline:
         This method handles different types of items.
         """
         item_type = item.__class__.__name__
-        doc_id = hashlib.sha1(item['url'].encode('utf-8')).hexdigest() if item_type != "LinkItem" else hashlib.sha1(item['target'].encode('utf-8')).hexdigest()
+        if item_type != "LinkItem":
+            doc_id = hashlib.sha1(item['url'].encode('utf-8')).hexdigest()
+        else:
+            doc_id = hashlib.sha1(item['target'].encode('utf-8')).hexdigest()
 
         if isinstance(item, DocumentItem):
             action = {
@@ -70,7 +81,9 @@ class CustomElasticSearchPipeline:
         Send buffered items to Elasticsearch using the bulk API.
         """
         try:
-            success, _ = bulk(self.es, self.items_buffer, index=self.index_name, raise_on_error=True)
+            success, _ = bulk(self.es, self.items_buffer,
+                              index=self.index_name,
+                              raise_on_error=True)
             logger.info(f"Successfully indexed {success} items.")
         except Exception as e:
             logger.error(f"Error indexing items: {e}")
