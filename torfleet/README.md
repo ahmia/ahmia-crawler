@@ -13,8 +13,11 @@ curl --proxy http://localhost:19050 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2
 Install Privoxy for HTTPS connections
 
 ```sh
-# Add
-# forward-socks5t   /               127.0.0.1:9050 .
+# Add to the file /etc/privoxy/config following:
+forward-socks5t   /               127.0.0.1:9050 .
+```
+
+```sh
 sudo systemctl start privoxy
 curl -v --proxy 127.0.0.1:8118 https://ahmia.fi/robots.txt
 curl --proxy 127.0.0.1:8118 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/robots.txt
