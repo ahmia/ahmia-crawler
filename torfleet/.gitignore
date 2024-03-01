@@ -3,6 +3,8 @@
 *.csv
 *.json
 
+privoxy_configs/config_
+
 # Process .pid files
 *.pid
 

@@ -59,7 +59,5 @@ try:
 except requests.exceptions.Timeout:
     print("\nsettings.py: Timed out fetching BANNED_DOMAINS\n")
 
-# Tor proxy settings
-HTTPS_PROXY_TOR_PROXIES = ["http://localhost:8118/"]  # Tor HTTPS Privoxy proxy
-# Tor HTTP Python proxies localhost:15000 ... localhost:15029
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0,30)]
+# Tor proxy settings: http://localhost:15000 - http://localhost:15049
+HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0,50)]

@@ -14,7 +14,7 @@ urls = [
 
 for url in urls:
     parsed_uri = urlparse(url)
-    domain = domain = parsed_uri.netloc
+    domain = parsed_uri.netloc
     random.seed(domain) # A seed for randomness is the onion domain
     # List of proxies available
     tor_proxy_list = list( range(8080,8090) )
