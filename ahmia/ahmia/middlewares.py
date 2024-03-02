@@ -19,7 +19,7 @@ class ProxyMiddleware(object):
     def process_request(self, request, spider):
         """Process incoming request."""
         parsed_uri = urlparse(request.url)
-        domain = parsed_uri.netloc
+        domain ='.'.join(parsed_uri.netloc.split('.')[-2:])
         if not domain.endswith('.onion') or len(domain) != 62:
             logger.info(f'Ignoring request {domain}, not v3 onion domain.')
             raise IgnoreRequest("Not a valid onion v3 address")
