@@ -1,5 +1,6 @@
 Scrapy==2.11.1
-cssselect==1.2.0
-html2text==2020.1.16
-python-decouple==3.8
-igraph==0.11.4
+cssselect>=1.2.0
+html2text>=2020.1.16
+python-decouple>=3.8
+igraph>=0.11.4
+pyOpenSSL>=23.2.0
