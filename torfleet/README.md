@@ -5,6 +5,17 @@ Crawler already has a load balancing that keeps the same client for the same dom
 
 Install Privoxy.
 
+I.e, on Ubuntu, adjust the AppArmor profile for Privoxy to allow it access to the configuration files:
+
+```sh
+sudo nano /etc/apparmor.d/usr.sbin.privoxy
+
+# Add the Necessary Permissions: allow Privoxy to read torfleet configuration files:
+/yourpath/ahmia-crawler/torfleet/** r,
+
+sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.privoxy
+```
+
 Run
 
 ```sh
