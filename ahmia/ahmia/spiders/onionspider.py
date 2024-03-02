@@ -117,7 +117,7 @@ class OnionSpider(CrawlSpider):
 
     def parse_item(self, response):
         """ Parse a response into a DocumentItem. """
-        self.logger.info(f'Visited {response.url}')
+        #self.logger.info(f'Visited {response.url}')
         doc_loader = ItemLoader(item=DocumentItem(), response=response)
         doc_loader.add_value('url', response.url)
         doc_loader.add_xpath('meta', '//meta[@name=\'description\']/@content')
