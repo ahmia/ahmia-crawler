@@ -19,14 +19,28 @@ ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS', default='/etc/elasticsearch/certs
 # Identify as normal Tor Browser
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"
 
-DOWNLOAD_TIMEOUT = 80  # seconds
+# Main settings for crawling speed and performance
+DOWNLOAD_TIMEOUT = 60  # seconds
 DOWNLOAD_DELAY = 1
-CONCURRENT_REQUESTS = 100
-LOG_LEVEL = 'INFO'
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
+
+# Crawl in breadth-first order (BFO)
+DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = "scrapy.squeues.PickleFifoDiskQueue"
+SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
+
+# Broad Crawls
+# https://docs.scrapy.org/en/latest/topics/broad-crawls.html
+SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
+CONCURRENT_REQUESTS = 50
+REACTOR_THREADPOOL_MAXSIZE = 40
+DOWNLOAD_MAXSIZE = 1024000  # Max-limit in bytes, 1MB
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
-DOWNLOAD_MAXSIZE = 1024000  # Max-limit in bytes, 1MB
-REACTOR_THREADPOOL_MAXSIZE = 20
+LOG_LEVEL = 'INFO'
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = True
 DEPTH_LIMIT = 1  # Crawling depth
