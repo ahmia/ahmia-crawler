@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ Settings """
+import warnings
 import datetime
 import requests
 from decouple import config
@@ -9,12 +10,19 @@ BOT_NAME = 'ahmia'
 SPIDER_MODULES = ['ahmia.spiders']
 NEWSPIDER_MODULE = 'ahmia.spiders'
 
+# Log level and ignore useless warnings
+LOG_LEVEL = 'INFO'
+warnings.filterwarnings("ignore", category=RuntimeWarning,
+                        module='scrapy.spidermiddlewares.referer',
+                        message="Could not load referrer policy")
+
 # Elasticsearch settings using environment variables for sensitive information
 ELASTICSEARCH_SERVER = config('ES_URL', default="https://localhost:9200/")
 ELASTICSEARCH_INDEX = datetime.datetime.now().strftime("tor-%Y-%m")
 ELASTICSEARCH_USERNAME = config('ES_USERNAME', default='elastic')
 ELASTICSEARCH_PASSWORD = config('ES_PASSWORD', default='password12345')
-ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS', default='/etc/elasticsearch/certs/http_ca.crt')
+ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS',
+                                default='/etc/elasticsearch/certs/http_ca.crt')
 
 # Identify as normal Tor Browser
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"
@@ -37,10 +45,9 @@ SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
 SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
 CONCURRENT_REQUESTS = 50
 REACTOR_THREADPOOL_MAXSIZE = 40
-DOWNLOAD_MAXSIZE = 1024000  # Max-limit in bytes, 1MB
+DOWNLOAD_MAXSIZE = 512000  # Max-limit in bytes, 0.512MB
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
-LOG_LEVEL = 'INFO'
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = True
 DEPTH_LIMIT = 1  # Crawling depth
@@ -74,4 +81,4 @@ except requests.exceptions.Timeout:
     print("\nsettings.py: Timed out fetching BANNED_DOMAINS\n")
 
 # Tor proxy settings: http://localhost:15000 - http://localhost:15049
-HTTP_PROXY_TOR_PROXIES = ["http://localhost:150%02d" % i for i in range(0,50)]
+HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 50)]

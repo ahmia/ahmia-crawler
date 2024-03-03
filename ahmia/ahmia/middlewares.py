@@ -21,7 +21,7 @@ class ProxyMiddleware(object):
         parsed_uri = urlparse(request.url)
         domain ='.'.join(parsed_uri.netloc.split('.')[-2:])
         if not domain.endswith('.onion') or len(domain) != 62:
-            logger.info(f'Ignoring request {domain}, not v3 onion domain.')
+            logger.debug(f'Ignoring request {domain}, not v3 onion domain.')
             raise IgnoreRequest("Not a valid onion v3 address")
         # Always select the same proxy for the same onion domain
         # This will keep only one underlining Tor circuit to the onion service
@@ -50,7 +50,7 @@ class SubDomainLimit(object):
     def process_request(self, request, spider):
         hostname = urlparse(request.url).hostname
         if hostname.count('.') > 3: # abc.abc.someonion.onion -> 3
-            logger.info(f"Ignoring request {request.url}, too many sub domains.")
+            logger.debug(f"Ignoring request {request.url}, too many sub domains.")
             raise IgnoreRequest("Too many sub domains")
 
 class FilterResponses(object):
@@ -59,7 +59,7 @@ class FilterResponses(object):
         type_whitelist = (r'text', )
         content_type_header = response.headers.get('content-type', b'').decode('utf-8')
         if not self.is_valid_response(type_whitelist, content_type_header):
-            logger.info(f"Ignoring response from {response.url}, content-type not in whitelist")
+            logger.debug(f"Ignoring response from {response.url}, content-type not in whitelist")
             raise IgnoreRequest("Content-type not in whitelist")
         return response
 
