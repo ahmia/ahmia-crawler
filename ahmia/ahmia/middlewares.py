@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 settings = get_project_settings()
 
-class ProxyMiddleware(object):
+class ProxyMiddleware:
     """Middleware for .onion addresses."""
     def process_request(self, request, spider):
         """Process incoming request."""
@@ -31,7 +31,7 @@ class ProxyMiddleware(object):
         # Always select the same proxy for the same onion address
         request.meta['proxy'] = random.choice(settings.get('HTTP_PROXY_TOR_PROXIES'))
 
-class FilterBannedDomains(object):
+class FilterBannedDomains:
     """Middleware to filter requests to banned domains."""
     def process_request(self, request, spider):
         domain = urlparse(request.url).netloc
@@ -45,7 +45,7 @@ class FilterBannedDomains(object):
                 logger.info(f"Ignoring request {request.url}, domain is banned.")
                 raise IgnoreRequest("Domain is banned")
 
-class SubDomainLimit(object):
+class SubDomainLimit:
     """Ignore weird sub domain loops."""
     def process_request(self, request, spider):
         hostname = urlparse(request.url).hostname
@@ -53,7 +53,7 @@ class SubDomainLimit(object):
             logger.debug(f"Ignoring request {request.url}, too many sub domains.")
             raise IgnoreRequest("Too many sub domains")
 
-class FilterResponses(object):
+class FilterResponses:
     """Limit the HTTP response types that Scrapy downloads."""
     def process_response(self, request, response, spider):
         type_whitelist = (r'text', )
@@ -65,7 +65,29 @@ class FilterResponses(object):
 
     @staticmethod
     def is_valid_response(type_whitelist, content_type_header):
+        """ Check if some whitelist type in content_type_header """
         for type_regex in type_whitelist:
             if re.search(type_regex, content_type_header):
                 return True
         return False
+
+class DomainLimitMiddleware:
+    """A request counter for each domain and a limit the number of requests"""
+    def __init__(self, max_requests):
+        self.max_requests = max_requests
+        self.domains_count = {}
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        """ This method is used by Scrapy to create your middleware instance """
+        return cls(max_requests=crawler.settings.getint('DOMAIN_MAX_REQUESTS', 0))
+
+    def process_request(self, request, spider):
+        """ Limit per domain or, otherwise, let Scrapy process the request """
+        if self.max_requests > 0:
+            domain = '.'.join(domain.split('.')[-2:]) # The main domain
+            # Increment the request count for the domain
+            self.domains_count[domain] = self.domains_count.get(domain, 0) + 1
+            # Block the request if the domain has reached its limit
+            if self.domains_count[domain] > self.max_requests:
+                raise IgnoreRequest(f"Reached max requests for {domain}")

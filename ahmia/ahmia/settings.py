@@ -39,6 +39,7 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
 DEPTH_PRIORITY = 1
 SCHEDULER_DISK_QUEUE = "scrapy.squeues.PickleFifoDiskQueue"
 SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
+DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0 for unlimited
 
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
@@ -60,15 +61,21 @@ ITEM_PIPELINES = {
 DOWNLOADER_MIDDLEWARES = {
     'ahmia.middlewares.ProxyMiddleware': 100,
     'ahmia.middlewares.FilterBannedDomains': 200,
-    'ahmia.middlewares.FilterResponses': 300,
+    'ahmia.middlewares.DomainLimitMiddleware': 300,
     'ahmia.middlewares.SubDomainLimit': 400,
+    'ahmia.middlewares.FilterResponses': 500, # Finally, filter non-text responses
 }
 
-SEEDLIST = ['http://torlinkv7cft5zhegrokjrxj2st4hcimgidaxdmcmdpcrnwfxrr2zxqd.onion/',
-         'http://zqktlwiuavvvqqt4ybvgvi7tyo4hjl5xgfuvpdf6otjiycgwqbym2qad.onion/wiki/index.php/Main_Page',
-         'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
-         'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
-         'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/']
+SEEDLIST = [
+    'http://torlinkv7cft5zhegrokjrxj2st4hcimgidaxdmcmdpcrnwfxrr2zxqd.onion/',
+    'http://zqktlwiuavvvqqt4ybvgvi7tyo4hjl5xgfuvpdf6otjiycgwqbym2qad.onion/wiki/index.php/Main_Page',
+    'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/'
+]
+
+for _i in range(2, 11):
+    SEEDLIST.append(f"http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover?p={_i}")
 
 BANNED_DOMAINS = []
 try:
