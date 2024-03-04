@@ -47,7 +47,7 @@ class FilterBannedDomains:
         banned_domains = settings.get('BANNED_DOMAINS', [])
         if not domain in seed_domain_list and not main_domain in seed_domain_list:
             if hash_domain in banned_domains or hash_main_domain in banned_domains:
-                logger.info(f"Ignoring request {request.url}, domain is banned.")
+                logger.debug(f"Ignoring request {request.url}, domain is banned.")
                 raise IgnoreRequest("Domain is banned")
 
 class SubDomainLimit:
