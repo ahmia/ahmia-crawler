@@ -14,42 +14,47 @@ logger = logging.getLogger(__name__)
 
 settings = get_project_settings()
 
+def extract_domains(request):
+    """Extract the main domain, xyz.onion, from the URL address"""
+    parsed_uri = urlparse(request.url)
+    domain = parsed_uri.netloc # abc.xyz.onion
+    main_domain = '.'.join(domain.split('.')[-2:]) # xyz.onion
+    return main_domain, domain # Return xyz.onion, abc.xyz.onion
+
 class ProxyMiddleware:
     """Middleware for .onion addresses."""
     def process_request(self, request, spider):
         """Process incoming request."""
-        parsed_uri = urlparse(request.url)
-        domain ='.'.join(parsed_uri.netloc.split('.')[-2:])
-        if not domain.endswith('.onion') or len(domain) != 62:
-            logger.debug(f'Ignoring request {domain}, not v3 onion domain.')
+        main_domain, _ = extract_domains(request)
+        if not main_domain.endswith('.onion') or len(main_domain) != 62:
+            logger.debug(f'Ignoring request {main_domain}, not v3 onion domain.')
             raise IgnoreRequest("Not a valid onion v3 address")
         # Always select the same proxy for the same onion domain
         # This will keep only one underlining Tor circuit to the onion service
         # Onion addresses form an uniform distribution
         # Therefore this address can be used as a seed for random
-        random.seed(domain) # A seed for randomness is the onion domain
+        random.seed(main_domain) # A seed for randomness is the onion domain
         # Always select the same proxy for the same onion address
         request.meta['proxy'] = random.choice(settings.get('HTTP_PROXY_TOR_PROXIES'))
 
 class FilterBannedDomains:
     """Middleware to filter requests to banned domains."""
     def process_request(self, request, spider):
-        domain = urlparse(request.url).netloc
-        maindomain = ".".join(domain.split(".")[-2:])
-        hash_maindomain = hashlib.md5(f"{maindomain}\n".encode('utf-8')).hexdigest()
+        main_domain, domain = extract_domains(request)
+        hash_main_domain = hashlib.md5(f"{main_domain}\n".encode('utf-8')).hexdigest()
         hash_domain = hashlib.md5(f"{domain}\n".encode('utf-8')).hexdigest()
         seed_domain_list = [urlparse(url).netloc for url in settings.get('SEEDLIST', [])]
         banned_domains = settings.get('BANNED_DOMAINS', [])
-        if not domain in seed_domain_list and not maindomain in seed_domain_list:
-            if hash_domain in banned_domains or hash_maindomain in banned_domains:
+        if not domain in seed_domain_list and not main_domain in seed_domain_list:
+            if hash_domain in banned_domains or hash_main_domain in banned_domains:
                 logger.info(f"Ignoring request {request.url}, domain is banned.")
                 raise IgnoreRequest("Domain is banned")
 
 class SubDomainLimit:
     """Ignore weird sub domain loops."""
     def process_request(self, request, spider):
-        hostname = urlparse(request.url).hostname
-        if hostname.count('.') > 3: # abc.abc.someonion.onion -> 3
+        _, domain = extract_domains(request)
+        if domain.count('.') > 3: # abc.abc.someonion.onion -> 3
             logger.debug(f"Ignoring request {request.url}, too many sub domains.")
             raise IgnoreRequest("Too many sub domains")
 
@@ -85,9 +90,9 @@ class DomainLimitMiddleware:
     def process_request(self, request, spider):
         """ Limit per domain or, otherwise, let Scrapy process the request """
         if self.max_requests > 0:
-            domain = '.'.join(domain.split('.')[-2:]) # The main domain
+            main_domain, _ = extract_domains(request)
             # Increment the request count for the domain
-            self.domains_count[domain] = self.domains_count.get(domain, 0) + 1
+            self.domains_count[main_domain] = self.domains_count.get(main_domain, 0) + 1
             # Block the request if the domain has reached its limit
-            if self.domains_count[domain] > self.max_requests:
-                raise IgnoreRequest(f"Reached max requests for {domain}")
+            if self.domains_count[main_domain] > self.max_requests:
+                raise IgnoreRequest(f"Reached max requests for {main_domain}")
