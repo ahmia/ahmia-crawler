@@ -8,7 +8,7 @@ mkdir -p "data/tor"
 mkdir -p "pids"
 mkdir -p "log"
 
-for i in {0..49}
+for i in {0..99}
 do
 	socks_port=$((base_socks_port+i))
 	http_port=$((base_http_port+i))

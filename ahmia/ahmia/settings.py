@@ -44,14 +44,14 @@ DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
 SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
-CONCURRENT_REQUESTS = 50
-REACTOR_THREADPOOL_MAXSIZE = 40
-DOWNLOAD_MAXSIZE = 512000  # Max-limit in bytes, 0.512MB
+CONCURRENT_REQUESTS = 100
+REACTOR_THREADPOOL_MAXSIZE = 100
+DOWNLOAD_MAXSIZE = 1048576 # Max-limit in bytes, 1 MB, 2^20 = 1,048,576 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = True
-DEPTH_LIMIT = 1  # Crawling depth
+DEPTH_LIMIT = 5  # Crawling depth, default is 5
 ROBOTSTXT_OBEY = False
 
 ITEM_PIPELINES = {
@@ -87,5 +87,5 @@ try:
 except requests.exceptions.Timeout:
     print("\nsettings.py: Timed out fetching BANNED_DOMAINS\n")
 
-# Tor proxy settings: http://localhost:15000 - http://localhost:15049
-HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 50)]
+# Tor proxy settings: http://localhost:15000 - http://localhost:15099
+HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 100)]

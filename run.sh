@@ -9,7 +9,7 @@ FINAL_MAX_TIME=605400 # Finally, wait 10mins more
 while true; do
     echo "Running the crawler: scrapy crawl ahmia-tor -s DEPTH_LIMIT=5"
     echo ""
-    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor -s DEPTH_LIMIT=5
+    timeout --signal=SIGKILL $FINAL_MAX_TIME timeout --kill-after=120 --signal=SIGINT $MAX_TIME scrapy crawl ahmia-tor
     # Sleep and run again
     echo ""
     echo "Sleeping $sleeptime seconds..."

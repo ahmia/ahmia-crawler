@@ -1,7 +1,7 @@
 #!/bin/bash
 base_http_port=15000
 
-for i in {0..49}
+for i in {0..99}
 do
 	http_port=$((base_http_port+i))
 
