@@ -41,8 +41,8 @@ class FilterBannedDomains:
     """Middleware to filter requests to banned domains."""
     def process_request(self, request, spider):
         main_domain, domain = extract_domains(request)
-        hash_main_domain = hashlib.md5(f"{main_domain}\n".encode('utf-8')).hexdigest()
-        hash_domain = hashlib.md5(f"{domain}\n".encode('utf-8')).hexdigest()
+        hash_main_domain = hashlib.md5(main_domain.encode('utf-8')).hexdigest()
+        hash_domain = hashlib.md5(domain.encode('utf-8')).hexdigest()
         seed_domain_list = [urlparse(url).netloc for url in settings.get('SEEDLIST', [])]
         banned_domains = settings.get('BANNED_DOMAINS', [])
         if not domain in seed_domain_list and not main_domain in seed_domain_list:
