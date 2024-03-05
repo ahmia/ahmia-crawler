@@ -19,16 +19,35 @@ from ahmia.items import DocumentItem, LinkItem, AuthorityItem
 class OnionSpider(CrawlSpider):
     """ The base to crawl onion webpages """
     name = "ahmia-tor"
-    settings = get_project_settings()
-    es_index = settings.get('ELASTICSEARCH_INDEX')
-    start_urls = settings.get('SEEDLIST', [])
-    rules = (Rule(LinkExtractor(allow=[r'^https?://[a-z2-7]{56}\.onion(?:/.*)?$']), callback='parse_item', follow=True),)
 
-    es = Elasticsearch(
-        [settings.get('ELASTICSEARCH_SERVER')],
-        http_auth=(settings.get('ELASTICSEARCH_USERNAME'), settings.get('ELASTICSEARCH_PASSWORD')),
-        ca_certs=settings.get('ELASTICSEARCH_CA_CERTS', None)
-    )
+    def __init__(self, *args, seedlist=None, **kwargs):
+        """ Init """
+        super().__init__(*args, **kwargs)  # Python 3 style super()
+
+        settings = get_project_settings()
+        self.es_index = settings.get('ELASTICSEARCH_INDEX')
+
+        self.rules = (
+            Rule(LinkExtractor(allow=[r'^https?://[a-z2-7]{56}\.onion(?:/.*)?$']),
+                 callback='parse_item', follow=True),
+        )
+
+        self._compile_rules()
+
+        if seedlist:  # Override SEEDLIST if `seedlist` argument is provided
+            # scrapy crawl ahmia-tor\
+            # -a seedlist=\
+            # 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',\
+            # 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/'
+            self.start_urls = [url.strip() for url in seedlist.split(',')]
+        else:
+            self.start_urls = settings.get('SEEDLIST', [])
+
+        self.es = Elasticsearch(
+            [settings.get('ELASTICSEARCH_SERVER')],
+            http_auth=(settings.get('ELASTICSEARCH_USERNAME'), settings.get('ELASTICSEARCH_PASSWORD')),
+            ca_certs=settings.get('ELASTICSEARCH_CA_CERTS', None)
+        )
 
     def binary_search(self, array, key, low, high):
         """ Fast search in a sorted array """
@@ -87,7 +106,7 @@ class OnionSpider(CrawlSpider):
     def compute_pagerank(self):
         """ Compute the pagerank dict """
         new_links = self.build_links()
-        nodes = set([url_hash for link in new_links for url_hash in link])
+        nodes = {url_hash for link in new_links for url_hash in link}
         links_graph = ig.Graph(len(nodes))
         links_graph.vs["name"] = list(nodes)
         links_graph.add_edges(new_links)
@@ -98,7 +117,7 @@ class OnionSpider(CrawlSpider):
 
     def parse(self, response):
         """ Parse a response, yields requests """
-        for request_or_item in super(OnionSpider, self).parse(response):
+        for request_or_item in super().parse(response):
             if isinstance(request_or_item, Request):
                 yield LinkItem(target=request_or_item.url,
                                source=response.url,
