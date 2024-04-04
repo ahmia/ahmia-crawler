@@ -51,7 +51,7 @@ COOKIES_ENABLED = False
 RETRY_ENABLED = False
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = True
-DEPTH_LIMIT = 7  # Crawling depth, default is 7
+DEPTH_LIMIT = 10  # Crawling depth, default is 10
 ROBOTSTXT_OBEY = False
 
 ITEM_PIPELINES = {
