@@ -51,7 +51,7 @@ COOKIES_ENABLED = False
 RETRY_ENABLED = False
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = True
-DEPTH_LIMIT = 15  # Crawling depth, default is 15
+DEPTH_LIMIT = 25  # Crawling depth, default is 25
 ROBOTSTXT_OBEY = False
 
 ITEM_PIPELINES = {
@@ -68,7 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 SEEDLIST = [
     'http://torlinkv7cft5zhegrokjrxj2st4hcimgidaxdmcmdpcrnwfxrr2zxqd.onion/',
-    'http://zqktlwiuavvvqqt4ybvgvi7tyo4hjl5xgfuvpdf6otjiycgwqbym2qad.onion/wiki/index.php/Main_Page',
+    'http://oniondirsl37g3uwoesuwvg6nufnsnibpfo7x7ukbydtdsgdpanjxjqd.onion/',
     'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/'
