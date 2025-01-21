@@ -25,7 +25,8 @@ ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS',
                                 default='/etc/elasticsearch/certs/http_ca.crt')
 
 # Identify as normal Tor Browser
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"
+#USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
+USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
 
 # Main settings for crawling speed and performance
 DOWNLOAD_TIMEOUT = 60  # seconds
@@ -79,7 +80,7 @@ for _i in range(2, 11):
 
 BANNED_DOMAINS = []
 try:
-    response = requests.get('https://ahmia.fi/banned/?987654321', timeout=60)
+    response = requests.get('https://ahmia.fi/banned/?987654321', timeout=120)
     for md5 in response.text.split("\n"):
         md5 = md5.strip().replace(" ", "")
         if len(md5) == 32:
