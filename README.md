@@ -42,6 +42,7 @@ source venv/bin/activate
 # Specific run examples
 
 ```sh
+source venv3/bin/activate
 scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -s LOG_LEVEL=DEBUG
 or
 scrapy crawl ahmia-tor -s DEPTH_LIMIT=1 -O items.json:json
@@ -54,8 +55,8 @@ scrapy crawl ahmia-tor -s DEPTH_LIMIT=3
 ```sh
 # Every day
 PATH=/usr/local/bin:/usr/bin:/bin:/home/juha/.local/bin
-30 06 * * * cd /home/juha/ahmia-crawler/ && bash run_daily.sh > ./daily.log 2>&1
+30 06 * * * cd /home/juha/ahmia-crawler/ && source venv3/bin/activate && bash run_daily.sh > ./daily.log 2>&1
 # First day of each month
 PATH=/usr/local/bin:/usr/bin:/bin:/home/juha/.local/bin
-30 01 01 * * cd /home/juha/ahmia-crawler/ && bash run.sh > ./monthly.log 2>&1
+30 01 01 * * cd /home/juha/ahmia-crawler/ && source venv3/bin/activate && bash run.sh > ./monthly.log 2>&1
 ```
