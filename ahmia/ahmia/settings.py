@@ -32,7 +32,7 @@ USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/1
 DOWNLOAD_TIMEOUT = 60  # seconds
 DOWNLOAD_DELAY = 1
 AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_START_DELAY = 2
 AUTOTHROTTLE_MAX_DELAY = 60
 AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
 
@@ -45,8 +45,9 @@ DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
 SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
-CONCURRENT_REQUESTS = 100
-REACTOR_THREADPOOL_MAXSIZE = 100
+CONCURRENT_REQUESTS = 25
+CONCURRENT_REQUESTS_PER_DOMAIN = 6
+REACTOR_THREADPOOL_MAXSIZE = 25
 DOWNLOAD_MAXSIZE = 1048576 # Max-limit in bytes, 1 MB, 2^20 = 1,048,576 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
