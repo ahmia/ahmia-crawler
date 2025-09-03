@@ -5,7 +5,7 @@ import logging
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from scrapy.utils.project import get_project_settings
-from .items import DocumentItem, LinkItem, AuthorityItem
+from .items import DocumentItem
 
 logger = logging.getLogger(__name__)
 settings = get_project_settings()
@@ -17,13 +17,19 @@ class CustomElasticSearchPipeline:
     items_buffer = []
 
     def __init__(self):
+
         self.es = Elasticsearch(
             [settings.get('ELASTICSEARCH_SERVER')],
-            http_auth=(settings.get('ELASTICSEARCH_USERNAME'),
-            settings.get('ELASTICSEARCH_PASSWORD')),
-            ca_certs=settings.get('ELASTICSEARCH_CA_CERTS', None)
+            basic_auth=(settings.get('ELASTICSEARCH_USERNAME'), settings.get('ELASTICSEARCH_PASSWORD')),
+            verify_certs=False,
+            ssl_show_warn=False,
+            max_retries=5,
+            request_timeout=30,
         )
+
         self.index_name = settings.get('ELASTICSEARCH_INDEX')
+
+        logger.info(f"Elasticsearch available: {self.es.info()}")
 
     def process_item(self, item, spider):
         """
@@ -38,34 +44,13 @@ class CustomElasticSearchPipeline:
         This method handles different types of items.
         """
         item_type = item.__class__.__name__
-        if item_type != "LinkItem":
-            doc_id = hashlib.sha1(item['url'].encode('utf-8')).hexdigest()
-        else:
-            doc_id = hashlib.sha1(item['target'].encode('utf-8')).hexdigest()
+        doc_id = hashlib.sha1(item['url'].encode('utf-8')).hexdigest()
 
         if isinstance(item, DocumentItem):
             action = {
                 "_index": self.index_name,
                 "_id": doc_id,
                 "_source": dict(item)
-            }
-        elif isinstance(item, LinkItem):
-            # For LinkItem, consider implementing logic to update or add links
-            action = {
-                "_index": self.index_name,
-                "_id": doc_id,
-                "_source": dict(item)
-            }
-        elif isinstance(item, AuthorityItem):
-            # For AuthorityItem, you might want to update existing documents
-            action = {
-                "_op_type": "update",
-                "_index": self.index_name,
-                "_id": doc_id,
-                "doc": {
-                    "authority": item['score']
-                },
-                "doc_as_upsert": True
             }
         else:
             logger.error(f"Unknown item type: {item_type}")

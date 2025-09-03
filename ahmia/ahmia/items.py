@@ -34,14 +34,3 @@ class DocumentItem(Item):
     content_type = Field(output_processor=TakeFirst())
     updated_on = Field(output_processor=TakeFirst())
     links = Field()
-
-class LinkItem(Item):
-    """Represents a hyperlink between two documents."""
-    source = Field()
-    target = Field()
-    anchor = Field()
-
-class AuthorityItem(Item):
-    """Represents the authority score of a page."""
-    url = Field()
-    score = Field(input_processor=MapCompose(to_float), output_processor=TakeFirst())

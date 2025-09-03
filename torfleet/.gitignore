@@ -29,6 +29,7 @@ VENV/
 env.bak/
 venv.bak/
 data/
+torrcs/
 
 # hidden folders
 .idea/

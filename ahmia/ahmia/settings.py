@@ -23,6 +23,8 @@ ELASTICSEARCH_USERNAME = config('ES_USERNAME', default='elastic')
 ELASTICSEARCH_PASSWORD = config('ES_PASSWORD', default='password12345')
 ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS',
                                 default='/etc/elasticsearch/certs/http_ca.crt')
+VERIFY_CERTS = config('VERIFY_CERTS', default=True)
+SSL_SHOW_WARN = config('SSL_SHOW_WARN', default=True)
 
 # Identify as normal Tor Browser
 #USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
@@ -45,9 +47,9 @@ DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
 SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
-CONCURRENT_REQUESTS = 25
-CONCURRENT_REQUESTS_PER_DOMAIN = 6
-REACTOR_THREADPOOL_MAXSIZE = 25
+CONCURRENT_REQUESTS = 100
+CONCURRENT_REQUESTS_PER_DOMAIN = 10
+REACTOR_THREADPOOL_MAXSIZE = 100
 DOWNLOAD_MAXSIZE = 1048576 # Max-limit in bytes, 1 MB, 2^20 = 1,048,576 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
