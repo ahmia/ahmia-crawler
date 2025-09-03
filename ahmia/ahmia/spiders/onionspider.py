@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """ OnionSpider class to crawl onion websites through the Tor network """
 import datetime
-import hashlib
 from urllib.parse import urlparse
 import html2text
-import igraph as ig
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from scrapy.http import HtmlResponse, Request
 from scrapy.selector import Selector
 from scrapy.utils.project import get_project_settings
 
@@ -52,7 +49,7 @@ class OnionSpider(CrawlSpider):
         return self.binary_search(array, key, middle + 1, high)
 
     def extract_urls_from_response(self, response):
-        """ Extract URLs from the given HtmlResponse object """
+        """ Extract URLs """
         # Use Scrapy's selector to extract href attributes from <a> tags
         urls = response.css('a::attr(href)').getall()
         # Filter out URLs that don't start with http:// or https://

@@ -71,15 +71,23 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 SEEDLIST = [
-    'http://torlinkv7cft5zhegrokjrxj2st4hcimgidaxdmcmdpcrnwfxrr2zxqd.onion/',
     'http://oniondirsl37g3uwoesuwvg6nufnsnibpfo7x7ukbydtdsgdpanjxjqd.onion/',
+    'http://onionzwpil5nbukgflurrfvommx6aznkz7aaqh2gwm4qsxjj6yvihxid.onion/',
     'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
-    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/'
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',
+    'http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/',
+    'http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/'
 ]
 
-for _i in range(2, 11):
+for _i in range(2, 36):
     SEEDLIST.append(f"http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover?p={_i}")
+
+for _i in range(2, 100):
+    SEEDLIST.append(f"http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/?page={_i}")
+
+for _i in range(2, 1000):
+    SEEDLIST.append(f"http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/search?q=onion&page={_i}")
 
 BANNED_DOMAINS = []
 try:
