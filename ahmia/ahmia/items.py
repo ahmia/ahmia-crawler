@@ -16,13 +16,6 @@ def remove_control_chars(s):
     """Remove control characters from a string."""
     return CHARS_RE.sub(' ', s)
 
-def to_float(s):
-    """Convert a string to float if possible, else return None."""
-    try:
-        return float(s)
-    except ValueError:
-        return None
-
 class DocumentItem(Item):
     """Represents a webpage document."""
     url = Field(output_processor=TakeFirst())
