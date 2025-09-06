@@ -29,13 +29,17 @@ class ProxyMiddleware:
         if not main_domain.endswith('.onion') or len(main_domain) != 62:
             logger.debug(f'Ignoring request {main_domain}, not v3 onion domain.')
             raise IgnoreRequest("Not a valid onion v3 address")
+        proxies = settings.get('HTTP_PROXY_TOR_PROXIES', [])
+        if not proxies:
+            raise IgnoreRequest("No Tor proxies configured")
         # Always select the same proxy for the same onion domain
         # This will keep only one underlining Tor circuit to the onion service
         # Onion addresses form an uniform distribution
-        # Therefore this address can be used as a seed for random
-        random.seed(main_domain) # A seed for randomness is the onion domain
+        # Deterministic, side-effect-free selection
+        h = hashlib.blake2b(main_domain.encode('utf-8'), digest_size=8).digest()
+        index = int.from_bytes(h, 'big') % len(proxies)
         # Always select the same proxy for the same onion address
-        request.meta['proxy'] = random.choice(settings.get('HTTP_PROXY_TOR_PROXIES'))
+        request.meta['proxy'] = proxies[index]
 
 class FilterBannedDomains:
     """Middleware to filter requests to banned domains."""

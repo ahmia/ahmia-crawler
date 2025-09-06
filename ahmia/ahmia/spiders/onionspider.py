@@ -7,7 +7,6 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
-from scrapy.utils.project import get_project_settings
 
 from ahmia.items import DocumentItem
 
@@ -19,13 +18,22 @@ class OnionSpider(CrawlSpider):
         """ Init """
         super().__init__(*args, **kwargs)  # Python 3 style super()
 
-        settings = get_project_settings()
-
         self.rules = (
-            Rule(LinkExtractor(allow=[r'^https?://[a-z2-7]{56}\.onion(?:/.*)?$']),
-                 callback='parse_item', follow=True),
+            Rule(
+                LinkExtractor(
+                    allow=[r"^https?://[a-z2-7]{56}\.onion(?:/.*)?$"],
+                    deny_extensions=[
+                        "7z","apk","bin","bz2","dmg","exe","gif","gz","ico","iso","jar",
+                        "jpg","jpeg","mp3","mp4","m4a","ogg","pdf","png","rar","svg",
+                        "tar","tgz","webm","webp","xz","zip"
+                    ],
+                    unique=True,
+                    canonicalize=True,
+                ),
+                callback="parse_item",
+                follow=True,
+            ),
         )
-
         self._compile_rules()
 
         if seedlist:  # Override SEEDLIST if `seedlist` argument is provided
@@ -33,38 +41,16 @@ class OnionSpider(CrawlSpider):
             # -a seedlist=\
             # 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',\
             # 'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/'
-            self.start_urls = [url.strip() for url in seedlist.split(',')]
+            self.start_urls = [url.strip() for url in seedlist.split(',') if url.strip()]
         else:
-            self.start_urls = settings.get('SEEDLIST', [])
-
-    def binary_search(self, array, key, low, high):
-        """ Fast search in a sorted array """
-        if low > high:
-            return -1
-        middle = (low + high) // 2  # Use floor division for Python 3 compatibility
-        if array[middle] == key:
-            return middle
-        if key < array[middle]:
-            return self.binary_search(array, key, low, middle - 1)
-        return self.binary_search(array, key, middle + 1, high)
-
-    def extract_urls_from_response(self, response):
-        """ Extract URLs """
-        # Use Scrapy's selector to extract href attributes from <a> tags
-        urls = response.css('a::attr(href)').getall()
-        # Filter out URLs that don't start with http:// or https://
-        urls = [url for url in urls if url.startswith('http://') or url.startswith('https://')]
-        return urls
-
-    def parse(self, response):
-        """ Parse a response, yields requests """
-        for request_or_item in super().parse(response):
-            yield request_or_item
+            from scrapy.utils.project import get_project_settings # defer to project settings
+            self.start_urls = get_project_settings().get("SEEDLIST", [])
 
     def html2string(self, response):
         """ Convert HTML content to plain text """
         converter = html2text.HTML2Text()
         converter.ignore_links = True
+        converter.ignore_images = True
         return converter.handle(response.text)
 
     def parse_item(self, response):
@@ -73,7 +59,7 @@ class OnionSpider(CrawlSpider):
         doc_loader = ItemLoader(item=DocumentItem(), response=response)
         doc_loader.add_value('url', response.url)
         doc_loader.add_xpath('meta', '//meta[@name=\'description\']/@content')
-        doc_loader.add_value('domain', urlparse(response.url).hostname)
+        doc_loader.add_value('domain', urlparse(response.url).hostname.lower())
         doc_loader.add_xpath('title', '//title/text()')
         hxs = Selector(response)  # For HTML extractions
         # Extract links on this page
