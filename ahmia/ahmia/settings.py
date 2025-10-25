@@ -74,9 +74,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 SEEDLIST = [
     'http://oniondirsl37g3uwoesuwvg6nufnsnibpfo7x7ukbydtdsgdpanjxjqd.onion/',
-    'http://onionzwpil5nbukgflurrfvommx6aznkz7aaqh2gwm4qsxjj6yvihxid.onion/',
     'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
-    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/',
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/?1234',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',
     'http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/',
     'http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/'
