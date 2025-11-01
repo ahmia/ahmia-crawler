@@ -50,7 +50,7 @@ SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
 CONCURRENT_REQUESTS = 100
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
 REACTOR_THREADPOOL_MAXSIZE = 100
-DOWNLOAD_MAXSIZE = 1048576 # Max-limit in bytes, 5 MB, 5*1024*1024 = 5,242,880 bytes
+DOWNLOAD_MAXSIZE = 5242880 # Max-limit in bytes, 5 MB, 5*1024*1024 = 5,242,880 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
 
@@ -76,7 +76,7 @@ SEEDLIST = [
     'http://oniondirsl37g3uwoesuwvg6nufnsnibpfo7x7ukbydtdsgdpanjxjqd.onion/',
     'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/?1234',
-    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/',
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/?1234',
     'http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/',
     'http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/'
 ]
