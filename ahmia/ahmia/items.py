@@ -26,4 +26,3 @@ class DocumentItem(Item):
     domain = Field(output_processor=TakeFirst())
     content_type = Field(output_processor=TakeFirst())
     updated_on = Field(output_processor=TakeFirst())
-    links = Field()

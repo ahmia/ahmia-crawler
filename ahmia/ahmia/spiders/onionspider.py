@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 import html2text
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 
 from ahmia.items import DocumentItem
@@ -54,60 +53,20 @@ class OnionSpider(CrawlSpider):
         return converter.handle(response.text)
 
     def parse_item(self, response):
-        """ Parse a response into a DocumentItem. """
-        #self.logger.info(f'Visited {response.url}')
-        doc_loader = ItemLoader(item=DocumentItem(), response=response)
-        doc_loader.add_value('url', response.url)
-        doc_loader.add_xpath('meta', '//meta[@name=\'description\']/@content')
-        doc_loader.add_value('domain', urlparse(response.url).hostname.lower())
-        doc_loader.add_xpath('title', '//title/text()')
-        hxs = Selector(response)  # For HTML extractions
-        # Extract links on this page
-        links = []
-        a_links = hxs.xpath('//a')
-        for link in a_links[0:250]: # limit to 250
-            link_obj = {}
-            # Extract the link's URL
-            link_str = " ".join(link.xpath('@href').extract())
-            link_obj['link'] = link_str.replace("\n", "")
-            # Extract the links value
-            link_name_str = " ".join(link.xpath('text()').extract())
-            link_name_str = link_name_str.replace("\n", "")
-            link_name_str = link_name_str.lstrip()
-            link_name_str = link_name_str.rstrip()
-            link_obj['link_name'] = link_name_str
-            # Skip extremely long "links" and link names (non-sense, broken HTML)
-            if len(link_obj['link']) >= 500 or len(link_obj['link_name']) >= 500:
-                continue # Skip, cannot be right link name or link URL
-            links.append(link_obj)
-        doc_loader.add_value('links', links)
-
-        # Populate text field
-        title_list = hxs.xpath('//title/text()').extract()
-        title = ' '.join(title_list)
+        """ Parse items  """
+        sel = Selector(response)
+        title = " ".join(sel.xpath("//title/text()").getall()).strip()
+        h1 = " ".join(sel.xpath("//h1/text()").getall()).strip()
         body_text = self.html2string(response)
-        text = title + " " + body_text
-        doc_loader.add_value('content', text)
-
-        doc_loader.add_value('title', title)
-        doc_loader.add_value('url', response.url)
-
-        h1_list = hxs.xpath("//h1/text()").extract()
-        doc_loader.add_value('h1', " ".join(h1_list))
-
-        doc_loader.add_value('content_type', response.headers['Content-type'].decode("utf-8"))
-        doc_loader.add_value('updated_on', datetime.datetime.now().strftime(
-            "%Y-%m-%dT%H:%M:%S"))
-        item = doc_loader.load_item()
-        # url, h1, title, meta, content, domain, content_type, updated_on, links
-        # Clean extremy long weird text content from the item
-        item["url"] = item.get("url", "")
-        item["h1"] = item.get("h1", "")[0:100]
-        item["title"] = item.get("title", "")[0:100]
-        item["meta"] = item.get("meta", "")[0:1000]
-        item["content"] = item.get("content", "")[0:500000]
-        item["domain"] = item.get("domain", "")
-        item["content_type"] = item.get("content_type", "")
-        item["updated_on"] = item.get("updated_on", "")
-        item["links"] = item.get("links", [])
+        full_content = f"{title} {body_text}"
+        item = DocumentItem()
+        item["url"] = response.url
+        item["domain"] = urlparse(response.url).hostname.lower()
+        item["title"] = title[:200]
+        item["h1"] = h1[:200]
+        meta_desc = sel.xpath("//meta[@name='description']/@content").get()
+        item["meta"] = (meta_desc or "")[:1000]
+        item["content"] = full_content[:1500000]
+        item["content_type"] = response.headers.get("Content-Type", b"").decode("utf-8")
+        item["updated_on"] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         return item
