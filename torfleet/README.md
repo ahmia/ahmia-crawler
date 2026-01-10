@@ -33,6 +33,6 @@ bash testall.sh
 ```
 
 ```sh
-kill $(ps aux | grep 'NewCircuitPeriod' | grep -v grep | awk '{print $2}')
-kill $(ps aux | grep 'privoxy privoxy_configs' | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep 'tor -f' | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep 'privoxy_configs' | grep -v grep | awk '{print $2}')
 ```
