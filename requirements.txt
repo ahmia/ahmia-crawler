@@ -1,4 +1,4 @@
-Scrapy==2.13.3
+Scrapy==2.14.0
 cssselect>=1.2.0
 html2text>=2020.1.16
 python-decouple>=3.8
