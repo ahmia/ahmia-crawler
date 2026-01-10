@@ -31,7 +31,7 @@ SSL_SHOW_WARN = config('SSL_SHOW_WARN', default=True)
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
 
 # Main settings for crawling speed and performance
-DOWNLOAD_TIMEOUT = 60  # seconds
+DOWNLOAD_TIMEOUT = 120  # seconds
 DOWNLOAD_DELAY = 1
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_START_DELAY = 2
