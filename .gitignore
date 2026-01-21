@@ -24,5 +24,8 @@ VENV/
 env.bak/
 venv.bak/
 
+# Scrapy temp job directory
+jobdir/
+
 # hidden folders
 .idea/

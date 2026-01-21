@@ -2,17 +2,13 @@
 """Proxy middleware and other middlewares to support special handling."""
 import hashlib
 import logging
-import random
 import re
 from urllib.parse import urlparse
 
-from scrapy.utils.project import get_project_settings
 from scrapy.exceptions import IgnoreRequest
 
 # Get a logger instance for this module
 logger = logging.getLogger(__name__)
-
-settings = get_project_settings()
 
 def extract_domains(request):
     """Extract the main domain, xyz.onion, from the URL address"""
@@ -23,13 +19,21 @@ def extract_domains(request):
 
 class ProxyMiddleware:
     """Middleware for .onion addresses."""
-    def process_request(self, request, spider):
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        mw = cls()
+        mw.crawler = crawler
+        mw.settings = crawler.settings
+        return mw
+
+    def process_request(self, request):
         """Process incoming request."""
         main_domain, _ = extract_domains(request)
         if not main_domain.endswith('.onion') or len(main_domain) != 62:
             logger.debug(f'Ignoring request {main_domain}, not v3 onion domain.')
             raise IgnoreRequest("Not a valid onion v3 address")
-        proxies = settings.get('HTTP_PROXY_TOR_PROXIES', [])
+        proxies = self.settings.get('HTTP_PROXY_TOR_PROXIES', [])
         if not proxies:
             raise IgnoreRequest("No Tor proxies configured")
         # Always select the same proxy for the same onion domain
@@ -43,12 +47,19 @@ class ProxyMiddleware:
 
 class FilterBannedDomains:
     """Middleware to filter requests to banned domains."""
-    def process_request(self, request, spider):
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        mw = cls()
+        mw.settings = crawler.settings
+        return mw
+
+    def process_request(self, request):
         main_domain, domain = extract_domains(request)
         hash_main_domain = hashlib.md5(main_domain.encode('utf-8')).hexdigest()
         hash_domain = hashlib.md5(domain.encode('utf-8')).hexdigest()
-        seed_domain_list = [urlparse(url).netloc for url in settings.get('SEEDLIST', [])]
-        banned_domains = settings.get('BANNED_DOMAINS', [])
+        seed_domain_list = [urlparse(url).netloc for url in self.settings.get('SEEDLIST', [])]
+        banned_domains = self.settings.get('BANNED_DOMAINS', [])
         if not domain in seed_domain_list and not main_domain in seed_domain_list:
             if hash_domain in banned_domains or hash_main_domain in banned_domains:
                 logger.debug(f"Ignoring request {request.url}, domain is banned.")
@@ -56,7 +67,7 @@ class FilterBannedDomains:
 
 class SubDomainLimit:
     """Ignore weird sub domain loops."""
-    def process_request(self, request, spider):
+    def process_request(self, request):
         _, domain = extract_domains(request)
         if domain.count('.') > 3: # abc.abc.someonion.onion -> 3
             logger.debug(f"Ignoring request {request.url}, too many sub domains.")
@@ -64,7 +75,7 @@ class SubDomainLimit:
 
 class FilterResponses:
     """Limit the HTTP response types that Scrapy downloads."""
-    def process_response(self, request, response, spider):
+    def process_response(self, request, response):
         type_whitelist = (r'text', )
         content_type_header = response.headers.get('content-type', b'').decode('utf-8')
         if not self.is_valid_response(type_whitelist, content_type_header):
@@ -91,7 +102,7 @@ class DomainLimitMiddleware:
         """ This method is used by Scrapy to create your middleware instance """
         return cls(max_requests=crawler.settings.getint('DOMAIN_MAX_REQUESTS', 0))
 
-    def process_request(self, request, spider):
+    def process_request(self, request):
         """ Limit per domain or, otherwise, let Scrapy process the request """
         if self.max_requests > 0:
             main_domain, _ = extract_domains(request)

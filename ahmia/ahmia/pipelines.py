@@ -4,19 +4,21 @@ import hashlib
 import logging
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from scrapy.utils.project import get_project_settings
 from .items import DocumentItem
 
 logger = logging.getLogger(__name__)
-settings = get_project_settings()
 
 class CustomElasticSearchPipeline:
     """
     CustomElasticSearchPipeline is responsible for indexing items to Elasticsearch.
     """
-    items_buffer = []
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings)
 
-    def __init__(self):
+    def __init__(self, settings):
+        self.settings = settings
+        self.items_buffer = []
 
         self.es = Elasticsearch(
             [settings.get('ELASTICSEARCH_SERVER')],
@@ -27,11 +29,11 @@ class CustomElasticSearchPipeline:
             request_timeout=30,
         )
 
-        self.index_name = settings.get('ELASTICSEARCH_INDEX')
+        self.index_name = self.settings.get('ELASTICSEARCH_INDEX')
 
         logger.info(f"Elasticsearch available: {self.es.info()}")
 
-    def process_item(self, item, spider):
+    def process_item(self, item):
         """
         This is the function Scrapy calls for the each pipeline
         """
@@ -58,7 +60,7 @@ class CustomElasticSearchPipeline:
 
         self.items_buffer.append(action)
 
-        if len(self.items_buffer) >= settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
+        if len(self.items_buffer) >= self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
             self.send_items()
 
     def send_items(self):
@@ -75,7 +77,7 @@ class CustomElasticSearchPipeline:
         finally:
             self.items_buffer = []
 
-    def close_spider(self, spider):
+    def close_spider(self):
         """
         Called when the spider is closed. Flushes remaining items to Elasticsearch.
         """

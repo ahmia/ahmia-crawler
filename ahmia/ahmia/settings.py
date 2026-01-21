@@ -40,13 +40,16 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
 
 # Crawl in breadth-first order (BFO)
 DEPTH_PRIORITY = 1
+DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0 for unlimited
+
 SCHEDULER_DISK_QUEUE = "scrapy.squeues.PickleFifoDiskQueue"
 SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
-DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0 for unlimited
+
+JOBDIR = "jobdir" # disk-backed to avoid memory growth
 
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
-SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
+SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
 CONCURRENT_REQUESTS = 100
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
 REACTOR_THREADPOOL_MAXSIZE = 100
@@ -57,7 +60,8 @@ RETRY_ENABLED = False
 REDIRECT_ENABLED = True
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = False
-DEPTH_LIMIT = 25  # Crawling depth, default is 25
+DEPTH_LIMIT = 10 # Crawling depth, default is 10
+DEPTH_STATS_VERBOSE = True # Output per-depth request counts
 ROBOTSTXT_OBEY = False
 
 ITEM_PIPELINES = {
@@ -73,7 +77,6 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 SEEDLIST = [
-    'http://oniondirsl37g3uwoesuwvg6nufnsnibpfo7x7ukbydtdsgdpanjxjqd.onion/',
     'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/?1234',
     'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/?1234',
