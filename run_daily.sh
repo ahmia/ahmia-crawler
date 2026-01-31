@@ -2,6 +2,8 @@
 
 cd ahmia
 
+rm -rf jobdir
+
 # One day
 MAX_TIME=85200
 FINAL_MAX_TIME=86400

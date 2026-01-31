@@ -2,6 +2,8 @@
 
 cd ahmia
 
+rm -rf jobdir
+
 MAX_TIME=2160000 # 25 days
 FINAL_MAX_TIME=2163600 # Finally, wait 60 mins more
 
