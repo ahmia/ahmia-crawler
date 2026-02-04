@@ -26,6 +26,8 @@ ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS',
 VERIFY_CERTS = config('VERIFY_CERTS', default=True)
 SSL_SHOW_WARN = config('SSL_SHOW_WARN', default=True)
 
+ELASTICSEARCH_BUFFER_LENGTH = 100
+
 # Identify as normal Tor Browser
 #USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0"
@@ -50,9 +52,9 @@ JOBDIR = "jobdir" # disk-backed to avoid memory growth
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
 SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
-CONCURRENT_REQUESTS = 100
+CONCURRENT_REQUESTS = 50
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
-REACTOR_THREADPOOL_MAXSIZE = 100
+REACTOR_THREADPOOL_MAXSIZE = 50
 DOWNLOAD_MAXSIZE = 5242880 # Max-limit in bytes, 5 MB, 5*1024*1024 = 5,242,880 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False

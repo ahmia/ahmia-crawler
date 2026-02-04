@@ -60,7 +60,7 @@ class CustomElasticSearchPipeline:
 
         self.items_buffer.append(action)
 
-        if len(self.items_buffer) >= self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 500):
+        if len(self.items_buffer) >= self.settings.get('ELASTICSEARCH_BUFFER_LENGTH', 100):
             self.send_items()
 
     def send_items(self):
