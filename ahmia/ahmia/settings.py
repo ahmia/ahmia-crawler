@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Settings """
+import re
+import hashlib
 import warnings
 import datetime
 import requests
@@ -31,14 +33,16 @@ ELASTICSEARCH_BUFFER_LENGTH = 100
 # Identify as normal Tor Browser
 #USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0"
+HEADERS = {'User-Agent': USER_AGENT}
 
 # Main settings for crawling speed and performance
-DOWNLOAD_TIMEOUT = 120  # seconds
+DOWNLOAD_TIMEOUT = 60 # seconds
 DOWNLOAD_DELAY = 1
-AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 2
-AUTOTHROTTLE_MAX_DELAY = 60
-AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
+AUTOTHROTTLE_ENABLED = False
+#AUTOTHROTTLE_ENABLED = True
+#AUTOTHROTTLE_START_DELAY = 2
+#AUTOTHROTTLE_MAX_DELAY = 60
+#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Adjust based on performance
 
 # Crawl in breadth-first order (BFO)
 DEPTH_PRIORITY = 1
@@ -51,10 +55,11 @@ JOBDIR = "jobdir" # disk-backed to avoid memory growth
 
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
-SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
-CONCURRENT_REQUESTS = 50
+#SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
+SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
+CONCURRENT_REQUESTS = 100
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
-REACTOR_THREADPOOL_MAXSIZE = 50
+REACTOR_THREADPOOL_MAXSIZE = 100
 DOWNLOAD_MAXSIZE = 5242880 # Max-limit in bytes, 5 MB, 5*1024*1024 = 5,242,880 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
@@ -78,26 +83,43 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middlewares.FilterResponses': 500, # Finally, filter non-text responses
 }
 
-SEEDLIST = [
-    'http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover',
-    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/address/?1234',
-    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/add/onionsadded/?1234',
-    'http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/',
-    'http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/'
-]
+# Tor proxy settings: http://localhost:15000 - http://localhost:15099
+HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 100)]
 
-for _i in range(2, 36):
-    SEEDLIST.append(f"http://3bbad7fauom4d6sgppalyqddsqbf5u5p56b5k5uk2zxsy3d6ey2jobad.onion/discover?p={_i}")
+def extract_onions_from_url(url, timeout=120):
+    """ Helper function to extract unique onion base URLs """
+    onions = set()
+    try:
+        resp = requests.get(url, timeout=timeout, headers=HEADERS)
+        resp.raise_for_status()
+        # Match full http://xyz.onion/ links
+        matches = re.findall(r'http://[a-z2-7]{16,56}\.onion/?', resp.text)
+        for match in matches:
+            # Normalize: ensure trailing slash
+            normalized = match.rstrip("/") + "/"
+            onions.add(normalized)
+    except requests.exceptions.Timeout:
+        print(f"\nsettings.py: Timed out fetching {url}\n")
+    except requests.exceptions.RequestException as e:
+        print(f"\nsettings.py: Error fetching {url} -> {e}\n")
+    return onions
 
-for _i in range(2, 100):
-    SEEDLIST.append(f"http://jywxh4q4arybssyaxjmfqooknt6skj2qmjhblewrhteeppmusmsfbyqd.onion/?page={_i}")
+SEEDLIST_SET = set([
+    'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/',
+])
 
-for _i in range(2, 1000):
-    SEEDLIST.append(f"http://checkitzh2q35xf42lrtxc6a4o2aqpvvu5dpdophhl44rnqla7ffpkid.onion/search?q=onion&page={_i}")
+# Fetch additional seeds
+SEEDLIST_SET.update(extract_onions_from_url(
+    'https://ahmia.fi/add/onionsadded/?1234'
+))
+
+SEEDLIST_SET.update(extract_onions_from_url(
+    'https://ahmia.fi/address/?1234'
+))
 
 BANNED_DOMAINS = []
 try:
-    response = requests.get('https://ahmia.fi/banned/?987654321', timeout=120)
+    response = requests.get('https://ahmia.fi/banned/?987654321', timeout=120, headers=HEADERS)
     for md5 in response.text.split("\n"):
         md5 = md5.strip().replace(" ", "")
         if len(md5) == 32:
@@ -105,5 +127,15 @@ try:
 except requests.exceptions.Timeout:
     print("\nsettings.py: Timed out fetching BANNED_DOMAINS\n")
 
-# Tor proxy settings: http://localhost:15000 - http://localhost:15099
-HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 100)]
+SEEDLIST = []
+
+for domain_url in SEEDLIST_SET:
+    if "://" in domain_url and ".onion" in domain_url:
+        onion_domain = domain_url.split("/")[2]
+        if onion_domain.endswith(".onion"):
+            main_domain = onion_domain.split(".")[0] + ".onion"
+            if hashlib.md5(main_domain.encode('utf-8')).hexdigest() in BANNED_DOMAINS:
+                continue
+        SEEDLIST.append(domain_url)
+
+print(f"\n settings.py loaded: SEEDLIST with {len(SEEDLIST)} onion addresses\n")
