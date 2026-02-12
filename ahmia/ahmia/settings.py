@@ -51,12 +51,12 @@ DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0
 SCHEDULER_DISK_QUEUE = "scrapy.squeues.PickleFifoDiskQueue"
 SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
 
-JOBDIR = "jobdir" # disk-backed to avoid memory growth
+#JOBDIR = "jobdir" # disk-backed to avoid memory growth
 
 # Broad Crawls
 # https://docs.scrapy.org/en/latest/topics/broad-crawls.html
-#SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
-SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
+SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
+#SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
 CONCURRENT_REQUESTS = 100
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
 REACTOR_THREADPOOL_MAXSIZE = 100
@@ -93,7 +93,7 @@ def extract_onions_from_url(url, timeout=120):
         resp = requests.get(url, timeout=timeout, headers=HEADERS)
         resp.raise_for_status()
         # Match full http://xyz.onion/ links
-        matches = re.findall(r'http://[a-z2-7]{16,56}\.onion/?', resp.text)
+        matches = re.findall(r'http://[a-z2-7]{56}\.onion/?', resp.text)
         for match in matches:
             # Normalize: ensure trailing slash
             normalized = match.rstrip("/") + "/"
