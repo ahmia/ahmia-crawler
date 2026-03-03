@@ -1,0 +1,20 @@
+[Unit]
+Description=Ahmia monthly onion crawl
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Environment=PATH=/home/juha/raid/github/ahmia-crawler/venv3/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=/home/juha/raid/github/ahmia-crawler
+ExecStart=/home/juha/raid/github/ahmia-crawler/run.sh
+
+# Ten days: 10*24*60*60 = 864000 seconds
+RuntimeMaxSec=864000
+
+# Safety net for your memory blow-ups
+MemoryMax=40G
+
+# Optional, but sensible
+KillSignal=SIGTERM
+TimeoutStopSec=120

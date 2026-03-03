@@ -28,7 +28,7 @@ ELASTICSEARCH_CA_CERTS = config('ES_CA_CERTS',
 VERIFY_CERTS = config('VERIFY_CERTS', default=True)
 SSL_SHOW_WARN = config('SSL_SHOW_WARN', default=True)
 
-ELASTICSEARCH_BUFFER_LENGTH = 100
+ELASTICSEARCH_BUFFER_LENGTH = 500
 
 # Identify as normal Tor Browser
 #USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
@@ -46,7 +46,7 @@ AUTOTHROTTLE_ENABLED = False
 
 # Crawl in breadth-first order (BFO)
 DEPTH_PRIORITY = 1
-DOMAIN_MAX_REQUESTS = 1000 # Spider does not over-focus on large websites, set 0 for unlimited
+DOMAIN_MAX_REQUESTS = 100 # Spider does not over-focus on large websites, set 0 for unlimited
 
 SCHEDULER_DISK_QUEUE = "scrapy.squeues.PickleFifoDiskQueue"
 SCHEDULER_MEMORY_QUEUE = "scrapy.squeues.FifoMemoryQueue"
@@ -59,7 +59,7 @@ SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.ScrapyPriorityQueue"
 #SCHEDULER_PRIORITY_QUEUE = "scrapy.pqueues.DownloaderAwarePriorityQueue"
 CONCURRENT_REQUESTS = 100
 CONCURRENT_REQUESTS_PER_DOMAIN = 10
-REACTOR_THREADPOOL_MAXSIZE = 100
+REACTOR_THREADPOOL_MAXSIZE = CONCURRENT_REQUESTS
 DOWNLOAD_MAXSIZE = 5242880 # Max-limit in bytes, 5 MB, 5*1024*1024 = 5,242,880 bytes
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
@@ -67,9 +67,18 @@ RETRY_ENABLED = False
 REDIRECT_ENABLED = True
 REDIRECT_MAX_TIMES = 3
 AJAXCRAWL_ENABLED = False
-DEPTH_LIMIT = 10 # Crawling depth, default is 10
+DEPTH_LIMIT = 5 # Crawling depth, default is 5
 DEPTH_STATS_VERBOSE = True # Output per-depth request counts
 ROBOTSTXT_OBEY = False
+
+EXTENSIONS = {
+    'scrapy.extensions.memusage.MemoryUsage': 500,
+    'scrapy.extensions.closespider.CloseSpider': 600,
+}
+
+MEMUSAGE_CHECK_INTERVAL_SECONDS = 5.0
+MEMUSAGE_LIMIT_MB = 35000
+MEMUSAGE_WARNING_MB = 30000
 
 ITEM_PIPELINES = {
     'ahmia.pipelines.CustomElasticSearchPipeline': 900,

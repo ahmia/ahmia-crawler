@@ -2,6 +2,7 @@
 """ OnionSpider class to crawl onion websites through the Tor network """
 import datetime
 from urllib.parse import urlparse
+from collections import defaultdict
 import html2text
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
@@ -11,6 +12,8 @@ from ahmia.items import DocumentItem
 class OnionSpider(CrawlSpider):
     """ The base to crawl onion webpages """
     name = "ahmia-tor"
+
+    MAX_EXTRACTED_LINKS_PER_DOMAIN = 50000
 
     rules = (
         Rule(
@@ -26,6 +29,7 @@ class OnionSpider(CrawlSpider):
             ),
             callback="parse_item",
             follow=True,
+            process_links="limit_links_per_domain",
         ),
     )
 
@@ -36,6 +40,7 @@ class OnionSpider(CrawlSpider):
         self.html_converter = html2text.HTML2Text()
         self.html_converter.ignore_links = True
         self.html_converter.ignore_images = True
+        self._extracted_links_per_domain = defaultdict(int)
 
         if seedlist:  # Override SEEDLIST if `seedlist` argument is provided
             # scrapy crawl ahmia-tor\
@@ -46,6 +51,22 @@ class OnionSpider(CrawlSpider):
         else:
             from scrapy.utils.project import get_project_settings # defer to project settings
             self.start_urls = get_project_settings().get("SEEDLIST", [])
+
+    def limit_links_per_domain(self, links):
+        """ Limit link extraction to 50,000 per one domain """
+        kept = []
+        for link in links:
+            host = (urlparse(link.url).hostname or "").lower()
+            if not host:
+                continue
+
+            if self._extracted_links_per_domain[host] >= self.MAX_EXTRACTED_LINKS_PER_DOMAIN:
+                continue
+
+            self._extracted_links_per_domain[host] += 1
+            kept.append(link)
+
+        return kept
 
     def html2string(self, response):
         """ Convert HTML content to plain text """
