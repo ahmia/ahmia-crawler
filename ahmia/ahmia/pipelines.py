@@ -2,6 +2,7 @@
 """ Pipelines """
 import hashlib
 import logging
+import re
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from .items import DocumentItem
@@ -40,6 +41,61 @@ class CustomElasticSearchPipeline:
         self.index_item(item)
         return item  # To continue passing items through other pipelines
 
+    def preprocess(self, text):
+
+        # 小文字化（大文字・小文字の違いを統一）
+        text = text.lower()
+
+        # 改行・タブ・複数スペースを1つの空白に統一
+        text = re.sub(r'\s+', ' ', text)
+
+        # onionアドレスを削除（サイト固有の識別情報を除去）
+        text = re.sub(
+            r'[a-z2-7]{56}\.onion',
+            '',
+            text
+        )
+
+        # URLを削除（リンク先の違いによる差を除去）
+        text = re.sub(
+            r'https?://\S+',
+            '',
+            text
+        )
+
+        # Bitcoinアドレスを削除（決済情報などサイト固有情報を除去）
+        text = re.sub(
+            r'\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b',
+            '',
+            text
+        )
+
+        # メールアドレスを削除（連絡先情報を除去）
+        text = re.sub(
+            r'\S+@\S+\.\S+',
+            '',
+            text
+        )
+
+        # 連続する特殊文字を削除（Markdown記号などのノイズ除去）
+        text = re.sub(
+            r'[*#|_\-]{2,}',
+            '',
+            text
+        )
+
+        # 再度、余分な空白を整理
+        text = re.sub(
+            r'\s+',
+            ' ',
+            text
+        )
+
+        # 前後の空白を削除
+        text = text.strip()
+
+        return text
+
     def index_item(self, item):
         """
         Items are indexed here.
@@ -50,12 +106,15 @@ class CustomElasticSearchPipeline:
 
         if isinstance(item, DocumentItem):
 
-            # ハッシュ値の生成
             content = item.get('content', '')
 
             if content:
+                # 前処理
+                clean_content = self.preprocess(content)
+                item['clean_content'] = clean_content
+                # ハッシュ値の生成
                 item['content_hash'] = hashlib.sha256(
-                    content.encode('utf-8')
+                    clean_content.encode('utf-8')
                 ).hexdigest()
             
             action = {
