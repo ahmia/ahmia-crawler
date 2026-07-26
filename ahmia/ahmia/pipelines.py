@@ -49,6 +49,15 @@ class CustomElasticSearchPipeline:
         doc_id = hashlib.sha1(item['url'].encode('utf-8')).hexdigest()
 
         if isinstance(item, DocumentItem):
+
+            # ハッシュ値の生成
+            content = item.get('content', '')
+
+            if content:
+                item['content_hash'] = hashlib.sha256(
+                    content.encode('utf-8')
+                ).hexdigest()
+            
             action = {
                 "_index": self.index_name,
                 "_id": doc_id,
