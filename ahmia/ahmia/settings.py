@@ -93,7 +93,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 # Tor proxy settings: http://localhost:15000 - http://localhost:15099
-HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 5)] # いったん100->5に変更中
+HTTP_PROXY_TOR_PROXIES = [f"http://localhost:150{i:02}" for i in range(0, 50)]
 
 def extract_onions_from_url(url, timeout=120):
     """ Helper function to extract unique onion base URLs """
