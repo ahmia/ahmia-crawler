@@ -77,6 +77,13 @@ class CustomElasticSearchPipeline:
             text
         )
 
+        # 本文と無関係なテンプレート由来の脚注・用語集ノイズを除去
+        text = re.sub(
+            r'\*\[[^\]]+\]:\s*[^*]*',
+            '',
+            text
+        )
+
         # 連続する特殊文字を削除（Markdown記号などのノイズ除去）
         text = re.sub(
             r'[*#|_\-]{2,}',
