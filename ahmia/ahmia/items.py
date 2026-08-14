@@ -25,6 +25,7 @@ class DocumentItem(Item):
     content = Field(input_processor=MapCompose(remove_control_chars), output_processor=TakeFirst())
     clean_content = Field(input_processor=TakeFirst())
     content_hash = Field(input_processor=TakeFirst())
+    simhash = Field(input_processor=TakeFirst())
     domain = Field(output_processor=TakeFirst())
     content_type = Field(output_processor=TakeFirst())
     updated_on = Field(output_processor=TakeFirst())

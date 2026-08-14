@@ -6,6 +6,10 @@ import re
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from .items import DocumentItem
+from collections import Counter
+
+SIMHASH_N = 3  # n-gramサイズ
+SIMHASH_BITS = 64 
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +107,77 @@ class CustomElasticSearchPipeline:
 
         return text
 
+    def make_ngrams(self, text, n=SIMHASH_N):
+        """
+        文字n-gram（shingle）のリストを生成する
+
+        例: make_ngrams("gift", n=3) -> ["gif", "ift"]
+        """
+        if len(text) < n:
+            return [text] if text else []
+        return [text[i:i + n] for i in range(len(text) - n + 1)]
+
+
+    def _hash_ngram(self, ngram, bits=SIMHASH_BITS):
+        """
+        1つのn-gramを、指定ビット数の整数ハッシュ値に変換する
+        """
+        digest = hashlib.md5(ngram.encode('utf-8')).digest()
+        # MD5は128bit(16byte)なので、先頭 bits//8 byteだけ使う
+        return int.from_bytes(digest[:bits // 8], byteorder='big')
+
+
+    def compute_simhash(self, text, n=SIMHASH_N, bits=SIMHASH_BITS):
+        """
+        テキストからSimHash値（整数）を計算する
+
+        手順:
+        1. 文字n-gramに分割する
+        2. 各n-gramの出現回数を数える（重みとして使う）
+        3. 各n-gramをハッシュ化し、ビットごとに重み付き投票を行う
+        4. 投票の符号（プラス/マイナス）で最終ビットを決定する
+
+        Args:
+            text: 前処理済みのテキスト（clean_content）
+            n: n-gramサイズ
+            bits: フィンガープリントのビット数
+
+        Returns:
+            int: SimHash値（0以上、2^bits未満の整数）
+                textが空の場合は0を返す
+        """
+        ngrams = self.make_ngrams(text, n)
+        if not ngrams:
+            return 0
+
+        counts = Counter(ngrams)
+        # 各ビット位置の投票を溜める配列
+        votes = [0] * bits
+
+        for ngram, weight in counts.items():
+            h = self._hash_ngram(ngram, bits)
+            for i in range(bits):
+                bit = (h >> i) & 1
+                if bit == 1:
+                    votes[i] += weight
+                else:
+                    votes[i] -= weight
+
+        fingerprint = 0
+        for i in range(bits):
+            if votes[i] > 0:
+                fingerprint |= (1 << i)
+
+        return fingerprint
+
+
+    def hamming_distance(self, hash1, hash2):
+        """
+        2つのSimHash値のハミング距離（異なるビット数）を計算する
+        """
+        return bin(hash1 ^ hash2).count('1')
+
+
     def index_item(self, item):
         """
         Items are indexed here.
@@ -114,6 +189,7 @@ class CustomElasticSearchPipeline:
         if isinstance(item, DocumentItem):
 
             content = item.get('content', '')
+            clean_content = ''
 
             if content:
                 # 前処理
@@ -123,6 +199,12 @@ class CustomElasticSearchPipeline:
                 item['content_hash'] = hashlib.sha256(
                     clean_content.encode('utf-8')
                 ).hexdigest()
+
+            # ★近似重複検出用SimHash値の生成（新規追加）
+            # 保存はEfficiencyのため文字列化しておく
+            # （ESのkeyword型フィールドとして扱いやすくするため）
+            simhash_value = self.compute_simhash(clean_content)
+            item['simhash'] = str(simhash_value)
             
             action = {
                 "_index": self.index_name,
