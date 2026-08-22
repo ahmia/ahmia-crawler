@@ -90,6 +90,7 @@ DOWNLOADER_MIDDLEWARES = {
     'ahmia.middlewares.DomainLimitMiddleware': 300,
     'ahmia.middlewares.SubDomainLimit': 400,
     'ahmia.middlewares.FilterResponses': 500, # Finally, filter non-text responses
+    'ahmia.middlewares.DeadSiteTracker': 600,
 }
 
 # Tor proxy settings: http://localhost:15000 - http://localhost:15099
