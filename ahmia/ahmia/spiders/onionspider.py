@@ -20,7 +20,7 @@ class OnionSpider(CrawlSpider):
     LARGE_TEXT_BYTES = 2 * 1024 * 1024
 
     MAX_EXTRACTED_LINKS_PER_DOMAIN = 50000
-
+    # 集めるサイトの条件指定
     rules = (
         Rule(
             LinkExtractor(
@@ -30,7 +30,7 @@ class OnionSpider(CrawlSpider):
                     "jpg", "jpeg", "mp3", "mp4", "m4a", "ogg", "pdf", "png", "rar", "svg",
                     "tar", "tgz", "webm", "webp", "xz", "zip"
                 ],
-                unique=True,
+                unique=True, # 同一リンクは排除
                 canonicalize=True,
             ),
             callback="parse_item",
@@ -39,6 +39,7 @@ class OnionSpider(CrawlSpider):
         ),
     )
 
+    # 初期設定
     def __init__(self, *args, seedlist=None, **kwargs):
         """ Init """
         super().__init__(*args, **kwargs)
@@ -47,7 +48,7 @@ class OnionSpider(CrawlSpider):
         self.html_converter.ignore_links = True
         self.html_converter.ignore_images = True
 
-        self._extracted_links_per_domain = defaultdict(int)
+        self._extracted_links_per_domain = defaultdict(int) # リンク内にあったリンク数を保存する変数
         self._current_response_host = None
 
         if seedlist:
@@ -58,6 +59,7 @@ class OnionSpider(CrawlSpider):
             self.start_urls = get_project_settings().get("SEEDLIST", [])
             self.logger.info("Using SEEDLIST from settings.py with %d URLs.", len(self.start_urls))
 
+    # 1ドメインから取得するリンク数の制限
     def limit_links_per_domain(self, links):
         """Limit extracted links to 50,000 per one domain."""
         kept = []
@@ -156,6 +158,7 @@ class OnionSpider(CrawlSpider):
             )
             return ""
 
+    # 取得したHTMLをparseItemに変換
     def parse_item(self, response):
         """Parse items."""
         self._current_response_host = (urlparse(response.url).hostname or "").lower()

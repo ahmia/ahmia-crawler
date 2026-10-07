@@ -7,6 +7,12 @@ from urllib.parse import urlparse
 
 from scrapy.exceptions import IgnoreRequest
 
+from scrapy.exceptions import (
+    IgnoreRequest,
+    DownloadTimeoutError,
+    DownloadConnectionRefusedError,
+)
+
 # Get a logger instance for this module
 logger = logging.getLogger(__name__)
 
@@ -111,3 +117,59 @@ class DomainLimitMiddleware:
             # Block the request if the domain has reached its limit
             if self.domains_count[main_domain] > self.max_requests:
                 raise IgnoreRequest(f"Reached max requests for {main_domain}")
+
+class DeadSiteTracker:
+    """
+    ダウンロード失敗（タイムアウト・接続拒否など、
+    "サイトが死んでいる"ことを示す真のネットワークエラー）だけを検知する。
+
+    IgnoreRequest（他ミドルウェアによる意図的なフィルタリング：
+    BAN・サブドメイン過多・上限到達・非テキストレスポンス等）は、
+    サイトの生死とは無関係なので、明示的に除外する。
+
+    実測（2026-08-20時点、DEPTH_LIMIT=1でのテストクロール）により、
+    以下の2種類が実際に発生することを確認済み:
+      - DownloadTimeoutError（313件、60秒応答なし）
+      - DownloadConnectionRefusedError（torfleet未起動時に大量発生。
+        本番では稀だが、Tor回線の一時的な不調で今後も起こりうるため対象に含める）
+    """
+
+    # サイトが本当に死んでいることを示唆する例外の種類
+    DEATH_SIGNAL_EXCEPTIONS = (
+        DownloadTimeoutError,
+        DownloadConnectionRefusedError,
+    )
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        mw = cls()
+        mw.settings = crawler.settings
+        from elasticsearch import Elasticsearch
+        mw.es = Elasticsearch(
+            [mw.settings.get('ELASTICSEARCH_SERVER')],
+            basic_auth=(
+                mw.settings.get('ELASTICSEARCH_USERNAME'),
+                mw.settings.get('ELASTICSEARCH_PASSWORD'),
+            ),
+            verify_certs=False,
+            ssl_show_warn=False,
+        )
+        mw.index_name = mw.settings.get('ELASTICSEARCH_INDEX')
+        return mw
+
+    def process_exception(self, request, exception, spider):
+        if isinstance(exception, IgnoreRequest):
+            return None  # 意図的なスキップ。死活判定には関係ない
+
+        if not isinstance(exception, self.DEATH_SIGNAL_EXCEPTIONS):
+            logger.debug(
+                f"未分類の例外のためスキップ: {request.url} "
+                f"({type(exception).__name__})"
+            )
+            return None
+
+        from .liveness_utils import record_crawl_failure, compute_doc_id
+        doc_id = compute_doc_id(request.url)
+        record_crawl_failure(self.es, self.index_name, doc_id, request.url)
+
+        return None
