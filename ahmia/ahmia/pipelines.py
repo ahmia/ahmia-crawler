@@ -74,8 +74,10 @@ class CustomElasticSearchPipeline:
             logger.info(f"Successfully indexed {success} items.")
         except Exception as e:
             logger.error(f"Error indexing items: {e}")
-        finally:
-            self.items_buffer = []
+            # Keep the batch so a later flush can retry instead of discarding it.
+            return
+
+        self.items_buffer = []
 
     def close_spider(self, spider):
         """
